@@ -1,5 +1,5 @@
 // ============================================================================
-// Pocket Familiar v1.1 — Chibi Tamagotchi & Quote Collector for SillyTavern
+// Pocket Familiar v1.3 — Ultra-Compact 8-Chibi Tamagotchi & Quote Collector
 // ============================================================================
 
 (function () {
@@ -7,7 +7,7 @@
 
   const EXT_KEY = 'pocket_familiar';
 
-  const SPECIES_ORDER = ['fox', 'bunny', 'kitten', 'dragon', 'hamster', 'shark'];
+  const SPECIES_ORDER = ['fox', 'bunny', 'kitten', 'dragon', 'hamster', 'shark', 'bee', 'spider'];
 
   const DEFAULT_SETTINGS = {
     enabled: true,
@@ -20,6 +20,8 @@
     idleReminder: true,
     idleSeconds: 50,
     hunger: 82,
+    size: 48,
+    pinBar: false,
     position: null,
     customSprites: {},
     quotes: [],
@@ -585,6 +587,192 @@
         },
       },
     },
+
+    bee: {
+      defaultName: 'Шмелик',
+      icon: '🐝',
+      accent: '#ffd54f',
+      bgStops: ['#2b2214', '#1b1612', '#2f2414'],
+      tasteLabel: 'цветочный уют, сладкий мёд и тёплые чувства',
+      greeting: 'Жжж-уют~🍯 Пушистый Шмелик приземлился на край чата собирать нектар из лучших цитат!',
+      favMoods: ['cozy', 'spicy', 'angst'],
+      lines: {
+        tap: [
+          'Жжж? Ч-чё смотришь? По законам физики я вообще летать не должен, зато смотри какой пушистый! 🍯💕',
+          'Осторожно, не смахни цветочную пыльцу со щёчек!.. Ладно, спинку погладить можно~',
+          'Я не толстенький, я бархатный и медовый! Это большая разница, жжж!',
+          'Усики сами к тебе тянутся — чуют самую сладкую булочку в этой таверне 🌸',
+          'Жжж-уютно тут у тебя~ Пиши дальше, строчки пахнут как майский клевер ✨',
+          'Чайку с мёдом не хочешь заварить? Шмелик заботится о твоём горлышке 🍯',
+          'Принесёшь капельку красивого текста? Спрячу в самые заветные соты!',
+        ],
+        pet: [
+          'Жжж-ур-р-р… бархатную спинку гладят… крылышки так затрепетали от счастья! 💕',
+          'Ой, тёпленько как на летнем одуванчике… сейчас усну прямо у тебя под пальчиком 💖',
+          'Пушистый шарик официально растаял в мёд! Гладь ещё, не останавливайся~ 🍯',
+          'Усики сердечком сложились от нежности… ты мой любимый цветочек 🌸',
+        ],
+        spamTap: [
+          'Жж-ж-ж! Не тыкай так быстро, я же не звонок на двери! У меня полосочки съехали! 😤🍯',
+          'Надулся в идеально круглый жёлтый помпон! Погладь ласково, чтобы я раздулся!',
+          'Щекотно пузику! Со шмелями надо нежно обращаться, мы ранимые булочки 💕',
+        ],
+        idle: [
+          'Жжж? Чего затихли на полянке, нектар вдохновения закончился? 🌻',
+          'Летаю кругами над полем ввода… давай опылим сюжет новой классной идеей!',
+          'Если слова разлетелись — жми на кубик, сейчас принесу свежую пыльцу для сцены 💕',
+          'Не бойся начать с простой строчки, мы из неё целый улей красоты соберём 🍯',
+        ],
+        erased: [
+          'Жжж?! Куда цветочек текста пропал, я только на него приземлиться хотел! 🥺',
+          'Зачем стёрла такую сладкую фразу? Она же так тепло звучала!',
+          'Ничего-ничего, расправляем крылышки и пробуем ещё раз 🌸',
+        ],
+        wallOfText: [
+          'Ого-о, целое цветущее поле буковок! Летаю от строчки к строчке в полном восторге! ✨',
+          'Сколько сладкого нектара для истории… улей сегодня гудит от радости! 🍯',
+        ],
+        swipes: [
+          'Пятый цветочек подряд облетаем! Ищем самый-самый медовый дубль? 🌸',
+          'Вжух крылышками — летим дальше! Капризная пчёлка… то есть шмелик одобряет 💕',
+          'Перебираем лепестки, сейчас точно попадётся идеальный ответ!',
+        ],
+        swipeRescue: [
+          'Вжух! Свайп сдул ответ ветром, но самую сладкую капельку нектара я успел поймать лапками! 🍯✨',
+          'Спас чудесную строчку прямо на лету и спрятал в медовые соты! 💕',
+        ],
+        snatch: [
+          'Жжж-ам! Какая медовая фраза — утащил в золотые соты 🍯',
+          'Опа, чистый цветочный нектар! Бережно спрятал в пушистый воротничок ✨',
+          'Крылышки засияли! Эта цитата теперь согревает наш уютный улей 💕',
+          'Собрал лапками лучшую строчку, зимой будем перечитывать с чаем 🌸',
+        ],
+        feed: [
+          'М-м-м, слаще липового мёда! Спасибо за угощение, моё солнышко 💖',
+          'Радостно жужжит и кружится в воздухе~ Положил цитату в главную ячейку сот! 🍯',
+          'От таких строчек на душе сразу тёплый июнь и одуванчики 🌸',
+        ],
+        hungry: [
+          'Крылышки опустились без сладких эмоций… подкинь хоть капельку уюта или драмы! 🥺',
+          'Грустно жужжу у пустой соты… покорми маленького пушистого шмелика красивой сценой~',
+          'Хочу мёда из чувств и живых диалогов! Ну пожалуйста 🍯',
+        ],
+        genSlow: [
+          'Жужжу прямо над ухом у сервера… эй, просыпайся, цветочки ждут! 🐝',
+          'Так медленно капает ответ, прямо как густой мёд с ложки… ждём-ждём!',
+        ],
+        night: [
+          'Цветочки давно закрыли лепестки, и нам пора баиньки под одеялко 💤🍯',
+          'Свернулся пушистым комочком в лепестках… сладких-сладких тебе снов, родная 💕',
+        ],
+        nostalgia: [
+          'Смотри, какую янтарную капельку мёда из прошлых сцен я нашёл в сотах! 🍯',
+          'Достал из заветного улья старую цитату — до чего же тепло было написано!',
+        ],
+        deleteQuote: [
+          'Жжж… освободили одну ячейку в сотах! Значит, наполним её свежим мёдом 💕',
+          'Проводил улетевший лепесток усиками~ Насобираем ещё слаще!',
+        ],
+        moods: {
+          angst: 'Ой, горьковатый вересковый мёд пошёл… сел тебе на плечико и тихонько грею пушком 🥺💕',
+          spicy: 'Жжж-жжж!! Тут так жарко стало, что у меня пыльца на щёчках вспыхнула! 😳🍯',
+          action: 'Улей гудит на всю таверну! Завис в воздухе с ведёрком попкорна! 🍿',
+        },
+      },
+    },
+
+    spider: {
+      defaultName: 'Паучок',
+      icon: '🕷️',
+      accent: '#c9a7ff',
+      bgStops: ['#221a30', '#14111f', '#281d38'],
+      tasteLabel: 'тонкие интриги, шёлковый уют и переплетения судеб',
+      greeting: 'Топ-топ всеми восемью лапками! 🕸️💕 Пушистый Паучок спустился на паутинке ловить лучшие цитаты!',
+      favMoods: ['sarcasm', 'angst', 'cozy'],
+      lines: {
+        tap: [
+          'Ой! Н-не пугайся! Я пушистый паучок-скакунчик, мух не обижаю — только красивые цитаты ловлю! 🥺🕸️',
+          'Ч-чё смотришь? Считаешь мои глазки? Их спереди четыре, чтобы вчетверо внимательнее твой чат читать! ✨',
+          'Я тут шёлковый гамачок в уголке сплёл, не порви случайно!.. Ну ладно, посиди рядышком 💕',
+          'Видишь пушистые лапки-варежки у щёчек? Могу всеми восемью сразу тебя обнять!',
+          'Ты так тонко плетёшь интригу в сюжете — даже я со своей паутинкой восхищаюсь! 🕸️✨',
+          'Плечики опусти, не сутулься над экраном~ Я сверху с паутинки за тобой приглядываю 💕',
+          'Подкинешь блестящую строчку, как росинку на паутинку? Буду беречь!',
+        ],
+        pet: [
+          'Ой-ой… прямо по пушистой макушке… у меня все восемь лапок от счастья подогнулись! 💕🕸️',
+          'Смущённо перебирает передними лапками~ Я самый залюбленный паучок на свете! 💖',
+          'Тёплый пальчик… сейчас от умиления сплету тебе крошечное сердечко из шёлка ✨',
+          'Гладь-гладь! Обещаю плести над твоим чатом только паутинки на удачу и вдохновение 🌸',
+        ],
+        spamTap: [
+          'Ай-ай! От твоих быстрых тыков у меня все восемь лапок в бантик завязались! 😤🕸️',
+          'Вж-жух вверх по ниточке на два сантиметра! Пока нежно не погладишь — буду смешно дуться!',
+          'Щекотно же! У меня все четыре глазика в кучку собрались от возмущения! 🥺💕',
+        ],
+        idle: [
+          'Тук-тук восьмью лапками~ Чё молчим, ниточка мысли оборвалась? Давай свяжем! 🕸️',
+          'Вишу вниз головой на паутинке и жду проду… может, нажмём на кубик для идеи? 💕',
+          'Тишина в уголке… не бойся тянуть сюжетную ниточку, я всегда подстрахую ✨',
+          'Задумалась, солнышко? Даже из одной маленькой фразы плетётся целый узор!',
+        ],
+        erased: [
+          'Ой! Такой ажурный узор из слов выходил, зачем распустила ниточку?! 🥺',
+          'Не сомневайся в себе, каждая твоя строчка блестит как утренняя роса на паутинке!',
+          'Ничего страшного, сейчас аккуратно сплетём заново ещё красивее 🕸️💕',
+        ],
+        wallOfText: [
+          'Ого-о, какое грандиозное полотно сюжета! Все четыре глазика сияют от восторга! ✨',
+          'Вот это хитросплетение чувств и событий… сижу в гамачке, читаю не дыша!',
+        ],
+        swipes: [
+          'Пятый раз переплетаем сцену! Ищем идеальный шёлковый узор? 🕸️',
+          'Вжух лапкой — старую паутинку сняли, новую натянули! Перфекционизм уважаю 💕',
+          'Перебираем варианты, пока не заблестит та самая жемчужная росинка!',
+        ],
+        swipeRescue: [
+          'Оп на паутинку! Свайп унёс ответ, но самую красивую строчку я успел поймать шёлковой ниточкой! 🕸️✨',
+          'Еле ухватил всеми лапками перед удалением! Завернул в уютный шёлковый узелок 💕',
+        ],
+        snatch: [
+          'Оп! Красивая фраза сама прилетела прямо в мою шёлковую паутинку 🕸️💕',
+          'Завернул чудесную строчку в мягкий шёлк и утащил в свой уголок ✨',
+          'Ух ты, какая тонкая реплика! Повесил как сияющую росинку на видное место 💖',
+          'Топ-топ лапками~ Ещё одно сокровище в нашей паутинной коллекции!',
+        ],
+        feed: [
+          'Уи-и! Какая прелесть! Обнял новую цитату сразу восемью лапками 💖🕸️',
+          'Спасибо за угощение~ Вплёл твою строчку в самый центр своего лучшего узора!',
+          'От такой красоты у меня даже шёлковая ниточка засветилась теплом ✨',
+        ],
+        hungry: [
+          'Паутинка совсем пустая висит… подкинь хоть росинку драмы, уюта или интриги! 🥺🕸️',
+          'Скромно перебираю лапками от голода… так хочется красивых переплетений сюжета!',
+          'Ну дай хоть кусочек вкусного диалога в мою паутинку, пожалуйста~ 💕',
+        ],
+        genSlow: [
+          'Дёргаю лапкой за паутинку интернета… эй, сервер, кто там на другом конце заснул? 🕸️',
+          'Что-то долго плетётся ответ… сижу на ниточке, болтаю лапками!',
+        ],
+        night: [
+          'Ночка тёмная, роса выпала… сворачивайся в одеялко, как я в свой шёлковый гамачок 💤🕸️',
+          'Четыре глазика уже закрываются, и твоим пора отдыхать! Сладких снов, родная 💕',
+        ],
+        nostalgia: [
+          'Смотри, какую сияющую строчку я сохранил на старой паутинке! Помнишь эту сцену? 🕸️✨',
+          'Развернул заветный шёлковый свёрточек из запасов — до чего же красиво было!',
+        ],
+        deleteQuote: [
+          'Ой… аккуратно отвязал росинку с паутинки! Сплетём на её месте новую 💕',
+          'Лапкой помахал вслед улетевшей цитатке~ В гамачке стало просторнее!',
+        ],
+        moods: {
+          angst: 'Ой, сердечко кольнуло… спустился на паутинке прямо к твоей щеке, не грусти, я рядом 🥺💕',
+          spicy: 'Ой-ёй!! Прикрыл все четыре глазика лапками — но между пальчиками всё равно видно! 😳🕸️',
+          action: 'Ничего себе интриги закрутились! Качаюсь на паутинке с мини-попкорном в четырёх лапках! 🍿',
+        },
+      },
+    },
   };
 
   const PLOT_PROMPTS = [
@@ -822,6 +1010,65 @@
       </svg>`;
     }
 
+    if (sp === 'bee') {
+      return `
+      <svg viewBox="0 0 84 84" xmlns="http://www.w3.org/2000/svg">
+        <g class="pf-svg-wing-l">
+          <ellipse cx="19" cy="45" rx="11" ry="7.5" transform="rotate(-24 19 45)" fill="#dff4ff" fill-opacity="0.86" stroke="#89bde0" stroke-width="1.4"/>
+        </g>
+        <g class="pf-svg-wing-r">
+          <ellipse cx="65" cy="45" rx="11" ry="7.5" transform="rotate(24 65 45)" fill="#dff4ff" fill-opacity="0.86" stroke="#89bde0" stroke-width="1.4"/>
+        </g>
+        <polygon points="40,75 44,75 42,79.5" fill="#4a2e20"/>
+        <ellipse cx="42" cy="56" rx="21.5" ry="18.5" fill="#ffd447" stroke="#5c3824" stroke-width="1.6"/>
+        <path d="M22.5 52 Q42 56.5 61.5 52 Q62.5 57.5 61 60 Q42 64.5 23 60 Q21.5 57.5 22.5 52 Z" fill="#4a2e20"/>
+        <path d="M26.5 65.5 Q42 69.5 57.5 65.5 Q55 70.5 52 72 Q42 75 32 72 Q29 70.5 26.5 65.5 Z" fill="#4a2e20"/>
+        <path d="M22 45 Q27 52 34 49 Q42 54 50 49 Q57 52 62 45 Q54 39 42 40 Q30 39 22 45 Z" fill="#fff8e3" stroke="#e0c389" stroke-width="1.2"/>
+        <g class="pf-svg-ear-l">
+          <path d="M34 24 Q29 12 23 15" stroke="#4a2e20" stroke-width="2.1" stroke-linecap="round" fill="none"/>
+          <circle cx="22.5" cy="15" r="3.4" fill="#ffd447" stroke="#4a2e20" stroke-width="1.4"/>
+        </g>
+        <path d="M50 24 Q55 12 61 15" stroke="#4a2e20" stroke-width="2.1" stroke-linecap="round" fill="none"/>
+        <circle cx="61.5" cy="15" r="3.4" fill="#ffd447" stroke="#4a2e20" stroke-width="1.4"/>
+        <ellipse cx="42" cy="39.5" rx="21" ry="17" fill="#ffe066" stroke="#5c3824" stroke-width="1.6"/>
+        ${renderChibiFace(visualState, '#4a2e20')}
+        <ellipse cx="33" cy="69.5" rx="3.8" ry="2.6" fill="#4a2e20"/>
+        <ellipse cx="51" cy="69.5" rx="3.8" ry="2.6" fill="#4a2e20"/>
+      </svg>`;
+    }
+
+    if (sp === 'spider') {
+      return `
+      <svg viewBox="0 0 84 84" xmlns="http://www.w3.org/2000/svg">
+        <line x1="42" y1="0" x2="42" y2="27" stroke="#e8ddff" stroke-opacity="0.7" stroke-width="1.3" stroke-dasharray="2.5 2"/>
+        <g class="pf-svg-tail">
+          <ellipse cx="42" cy="27" rx="13.5" ry="10" fill="#7c659c" stroke="#493863" stroke-width="1.5"/>
+          <path d="M42 25.5 C40 23 37.5 25 39.5 27.5 L42 29.8 L44.5 27.5 C46.5 25 44 23 42 25.5 Z" fill="#e6d6ff" opacity="0.75"/>
+        </g>
+        <g class="pf-svg-ear-l">
+          <path d="M23 44 Q9 37 7 45" stroke="#685387" stroke-width="3.4" stroke-linecap="round" fill="none"/>
+          <path d="M61 44 Q75 37 77 45" stroke="#685387" stroke-width="3.4" stroke-linecap="round" fill="none"/>
+        </g>
+        <path d="M22 49 Q7 45 6 54" stroke="#685387" stroke-width="3.4" stroke-linecap="round" fill="none"/>
+        <path d="M23 54 Q9 53 9 62" stroke="#685387" stroke-width="3.4" stroke-linecap="round" fill="none"/>
+        <path d="M26 58 Q15 60 16 68" stroke="#685387" stroke-width="3.3" stroke-linecap="round" fill="none"/>
+        <path d="M62 49 Q77 45 78 54" stroke="#685387" stroke-width="3.4" stroke-linecap="round" fill="none"/>
+        <path d="M61 54 Q75 53 75 62" stroke="#685387" stroke-width="3.4" stroke-linecap="round" fill="none"/>
+        <path d="M58 58 Q69 60 68 68" stroke="#685387" stroke-width="3.3" stroke-linecap="round" fill="none"/>
+        <ellipse cx="42" cy="46" rx="22.5" ry="18.5" fill="#957eb8" stroke="#493863" stroke-width="1.6"/>
+        <path d="M35 28 Q39 24 42 28 Q45 24 49 28" stroke="#b9a3db" stroke-width="2" stroke-linecap="round" fill="none"/>
+        <g transform="translate(0, 2.5)">
+          ${renderChibiFace(visualState, '#493863')}
+          <circle cx="22" cy="41.5" r="2.6" fill="#2b1922"/>
+          <circle cx="21.2" cy="40.7" r="1" fill="#ffffff"/>
+          <circle cx="62" cy="41.5" r="2.6" fill="#2b1922"/>
+          <circle cx="61.2" cy="40.7" r="1" fill="#ffffff"/>
+        </g>
+        <ellipse cx="34.5" cy="59.5" rx="5" ry="4.2" fill="#cbb7eb" stroke="#493863" stroke-width="1.4"/>
+        <ellipse cx="49.5" cy="59.5" rx="5" ry="4.2" fill="#cbb7eb" stroke="#493863" stroke-width="1.4"/>
+      </svg>`;
+    }
+
     // Default: Chibi Fox
     return `
     <svg viewBox="0 0 84 84" xmlns="http://www.w3.org/2000/svg">
@@ -851,6 +1098,7 @@
     visualState: 'idle',
     currentProp: '',
     bubbleTimer: null,
+    barHideTimer: null,
     animTimer: null,
     tapTimestamps: [],
     poutingUntil: 0,
@@ -1216,7 +1464,19 @@
     link.click();
   }
 
-  // ---------- Widget Rendering, Headpats & Speech Bubble ----------
+  // ---------- Runtime Cache-Proof CSS + Compact UI ----------
+  const RUNTIME_COMPACT_CSS = "/* ==========================================================================\n   Pocket Familiar v1.2 — Ultra-Compact Mobile Edition for SillyTavern\n   ========================================================================== */\n\n:root {\n  --pf-accent: #ff8c42;\n  --pf-accent-soft: rgba(255, 140, 66, 0.22);\n  --pf-bg-glass: rgba(20, 17, 26, 0.92);\n  --pf-card-bg: rgba(34, 28, 42, 0.96);\n  --pf-text: #f7efe6;\n  --pf-text-dim: #bbaea3;\n  --pf-border: rgba(255, 185, 130, 0.28);\n}\n\n#pf-widget[data-species=\"bunny\"] {\n  --pf-accent: #f48fb1;\n  --pf-accent-soft: rgba(244, 143, 177, 0.24);\n  --pf-border: rgba(244, 165, 193, 0.32);\n}\n\n#pf-widget[data-species=\"kitten\"] {\n  --pf-accent: #ffa8c5;\n  --pf-accent-soft: rgba(255, 168, 197, 0.24);\n  --pf-border: rgba(255, 188, 210, 0.32);\n}\n\n#pf-widget[data-species=\"dragon\"] {\n  --pf-accent: #b392ff;\n  --pf-accent-soft: rgba(179, 146, 255, 0.24);\n  --pf-border: rgba(196, 170, 255, 0.32);\n}\n\n#pf-widget[data-species=\"hamster\"] {\n  --pf-accent: #ffc266;\n  --pf-accent-soft: rgba(255, 194, 102, 0.24);\n  --pf-border: rgba(255, 210, 140, 0.32);\n}\n\n#pf-widget[data-species=\"shark\"] {\n  --pf-accent: #6ecbff;\n  --pf-accent-soft: rgba(110, 203, 255, 0.24);\n  --pf-border: rgba(145, 216, 255, 0.32);\n}\n\n#pf-widget[data-species=\"bee\"] {\n  --pf-accent: #ffd54f;\n  --pf-accent-soft: rgba(255, 213, 79, 0.24);\n  --pf-border: rgba(255, 224, 115, 0.36);\n}\n\n#pf-widget[data-species=\"spider\"] {\n  --pf-accent: #c9a7ff;\n  --pf-accent-soft: rgba(201, 167, 255, 0.24);\n  --pf-border: rgba(215, 190, 255, 0.36);\n}\n\n/* ---------- Compact Floating Widget ---------- */\n#pf-widget {\n  --pf-size: 48px;\n  position: fixed;\n  right: 12px;\n  bottom: 108px;\n  z-index: 3100;\n  width: var(--pf-size);\n  height: var(--pf-size);\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  user-select: none;\n  -webkit-user-select: none;\n  font-family: inherit;\n  pointer-events: none;\n}\n\n#pf-widget.pf-hidden {\n  display: none !important;\n}\n\n#pf-widget * {\n  box-sizing: border-box;\n}\n\n/* ---------- Compact Speech Bubble ---------- */\n#pf-bubble {\n  position: absolute;\n  bottom: calc(100% + 7px);\n  right: 0;\n  width: max-content;\n  max-width: min(195px, 60vw);\n  padding: 6px 9px;\n  border-radius: 13px 13px 3px 13px;\n  background: var(--pf-bg-glass);\n  backdrop-filter: blur(10px);\n  -webkit-backdrop-filter: blur(10px);\n  border: 1px solid var(--pf-border);\n  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.48);\n  color: var(--pf-text);\n  font-size: 11.5px;\n  line-height: 1.36;\n  opacity: 0;\n  transform: translateY(6px) scale(0.94);\n  transition: opacity 0.2s ease, transform 0.2s cubic-bezier(0.22, 1, 0.36, 1);\n  pointer-events: none;\n  z-index: 3115;\n}\n\n#pf-bubble.pf-visible {\n  opacity: 1;\n  transform: translateY(0) scale(1);\n  pointer-events: auto;\n  cursor: pointer;\n}\n\n#pf-widget.pf-dock-left #pf-bubble {\n  right: auto;\n  left: 0;\n  border-radius: 13px 13px 13px 3px;\n}\n\n#pf-widget.pf-dock-top #pf-bubble {\n  bottom: auto;\n  top: calc(100% + 34px);\n  border-radius: 13px 3px 13px 13px;\n}\n\n#pf-widget.pf-dock-left.pf-dock-top #pf-bubble {\n  border-radius: 3px 13px 13px 13px;\n}\n\n.pf-bubble-speaker {\n  font-size: 9.5px;\n  font-weight: 700;\n  letter-spacing: 0.03em;\n  text-transform: uppercase;\n  color: var(--pf-accent);\n  margin-bottom: 2px;\n}\n\n.pf-bubble-text {\n  word-wrap: break-word;\n}\n\n.pf-bubble-quote {\n  margin-top: 4px;\n  padding: 3px 6px;\n  border-left: 2px solid var(--pf-accent);\n  background: rgba(255, 255, 255, 0.05);\n  border-radius: 0 6px 6px 0;\n  font-style: italic;\n  font-size: 10.5px;\n  color: var(--pf-text-dim);\n  display: -webkit-box;\n  -webkit-line-clamp: 2;\n  -webkit-box-orient: vertical;\n  overflow: hidden;\n}\n\n/* ---------- Familiar Stage & Chibi Sprite ---------- */\n#pf-stage {\n  pointer-events: auto;\n  position: relative;\n  width: var(--pf-size);\n  height: var(--pf-size);\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  cursor: grab;\n  touch-action: none;\n  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.42));\n}\n\n#pf-stage:active {\n  cursor: grabbing;\n}\n\n#pf-avatar-wrap {\n  width: 100%;\n  height: 100%;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  animation: pf-breathe 3.4s ease-in-out infinite;\n  transform-origin: bottom center;\n}\n\n#pf-avatar-wrap svg {\n  width: 100%;\n  height: 100%;\n  overflow: visible;\n}\n\n#pf-avatar-wrap img.pf-custom-sprite {\n  width: 100%;\n  height: 100%;\n  object-fit: contain;\n  pointer-events: none;\n}\n\n/* Tiny Corner Quote Badge (like ST floating badges) */\n#pf-corner-badge {\n  position: absolute;\n  bottom: -1px;\n  right: -2px;\n  min-width: 16px;\n  height: 16px;\n  padding: 0 4px;\n  border-radius: 999px;\n  background: rgba(24, 20, 30, 0.92);\n  border: 1px solid var(--pf-border);\n  color: var(--pf-accent);\n  font-size: 9.5px;\n  font-weight: 700;\n  line-height: 14px;\n  text-align: center;\n  pointer-events: none;\n  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.45);\n  transition: opacity 0.18s ease;\n}\n\n#pf-corner-badge.pf-zero,\n#pf-widget.pf-bar-open #pf-corner-badge,\n#pf-widget.pf-pin-bar #pf-corner-badge {\n  opacity: 0;\n}\n\n/* Prop Badge */\n#pf-prop-badge {\n  position: absolute;\n  top: -3px;\n  right: -3px;\n  font-size: 13px;\n  line-height: 1;\n  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.6));\n  pointer-events: none;\n  transition: transform 0.2s ease, opacity 0.2s ease;\n}\n\n#pf-prop-badge:empty {\n  opacity: 0;\n  transform: scale(0.5);\n}\n\n/* Chibi SVG animations */\n#pf-widget .pf-svg-tail {\n  transform-origin: 58px 56px;\n  animation: pf-tail-wag 2.8s ease-in-out infinite;\n}\n\n#pf-widget .pf-svg-ear-l {\n  transform-origin: 32px 26px;\n  animation: pf-ear-twitch 5s ease-in-out infinite;\n}\n\n#pf-widget .pf-svg-eyes-open {\n  transform-origin: 42px 43px;\n  animation: pf-blink 4.6s ease-in-out infinite;\n}\n\n#pf-widget .pf-svg-blush {\n  animation: pf-blush-pulse 3s ease-in-out infinite;\n}\n\n#pf-widget .pf-svg-wing-l {\n  transform-origin: 26px 46px;\n  animation: pf-wing-l 0.45s ease-in-out infinite;\n}\n\n#pf-widget .pf-svg-wing-r {\n  transform-origin: 58px 46px;\n  animation: pf-wing-r 0.45s ease-in-out infinite;\n}\n\n#pf-widget[data-anim=\"hop\"] #pf-avatar-wrap {\n  animation: pf-hop 0.52s cubic-bezier(0.34, 1.56, 0.64, 1) 2;\n}\n\n#pf-widget[data-anim=\"gnaw\"] #pf-avatar-wrap {\n  animation: pf-gnaw 0.35s ease-in-out infinite;\n}\n\n#pf-widget[data-anim=\"poke\"] #pf-avatar-wrap {\n  animation: pf-poke 0.7s ease-in-out infinite;\n}\n\n#pf-widget[data-anim=\"sleep\"] #pf-avatar-wrap {\n  animation: pf-sleep 4.2s ease-in-out infinite;\n}\n\n#pf-widget[data-anim=\"purr\"] #pf-avatar-wrap {\n  animation: pf-purr-sway 0.65s ease-in-out infinite;\n}\n\n#pf-widget[data-anim=\"pout\"] #pf-avatar-wrap {\n  animation: pf-pout-wiggle 0.55s ease-in-out 2;\n}\n\n/* ---------- Auto-Hiding Sleek Micro-Bar ---------- */\n#pf-mini-bar {\n  position: absolute !important;\n  top: calc(100% + 4px) !important;\n  right: 0 !important;\n  height: 26px !important;\n  width: max-content !important;\n  display: inline-flex !important;\n  flex-direction: row !important;\n  flex-wrap: nowrap !important;\n  align-items: center !important;\n  gap: 3px !important;\n  padding: 2px 6px !important;\n  border-radius: 999px !important;\n  background: var(--pf-bg-glass) !important;\n  border: 1px solid var(--pf-border) !important;\n  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.45) !important;\n  backdrop-filter: blur(8px) !important;\n  -webkit-backdrop-filter: blur(8px) !important;\n  opacity: 0;\n  transform: translateY(-4px) scale(0.92);\n  pointer-events: none;\n  transition: opacity 0.18s ease, transform 0.18s ease;\n  z-index: 3110;\n}\n\n#pf-widget.pf-dock-left #pf-mini-bar {\n  right: auto !important;\n  left: 0 !important;\n}\n\n#pf-widget.pf-bar-open #pf-mini-bar,\n#pf-widget.pf-pin-bar #pf-mini-bar {\n  opacity: 1;\n  transform: translateY(0) scale(1);\n  pointer-events: auto;\n}\n\n.pf-ico-btn {\n  display: inline-flex !important;\n  align-items: center !important;\n  justify-content: center !important;\n  gap: 2px !important;\n  height: 20px !important;\n  min-width: 20px !important;\n  padding: 0 4px !important;\n  margin: 0 !important;\n  border: none !important;\n  border-radius: 999px !important;\n  background: transparent !important;\n  color: var(--pf-text) !important;\n  font-size: 12px !important;\n  line-height: 1 !important;\n  cursor: pointer !important;\n  box-shadow: none !important;\n  transition: background 0.14s ease, transform 0.14s ease;\n}\n\n.pf-ico-btn:hover,\n.pf-ico-btn:active {\n  background: var(--pf-accent-soft) !important;\n  transform: scale(1.1);\n}\n\n#pf-count-badge {\n  font-size: 9.5px !important;\n  font-weight: 700 !important;\n  color: var(--pf-accent) !important;\n}\n\n.pf-hunger-track {\n  width: 22px !important;\n  height: 4px !important;\n  background: rgba(255, 255, 255, 0.14) !important;\n  border-radius: 999px !important;\n  overflow: hidden !important;\n  flex-shrink: 0 !important;\n}\n\n#pf-hunger-fill {\n  height: 100% !important;\n  width: 80%;\n  background: linear-gradient(90deg, #ff6b6b, var(--pf-accent), #7bed9f) !important;\n  border-radius: 999px !important;\n  transition: width 0.4s ease;\n}\n\n/* ---------- Compact 3x2 Species Grid Popover ---------- */\n#pf-species-menu {\n  position: absolute !important;\n  bottom: calc(100% + 6px) !important;\n  right: 0 !important;\n  display: none !important;\n  grid-template-columns: repeat(4, 28px) !important;\n  gap: 4px !important;\n  padding: 5px !important;\n  width: max-content !important;\n  height: auto !important;\n  border-radius: 12px !important;\n  background: var(--pf-bg-glass) !important;\n  border: 1px solid var(--pf-border) !important;\n  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.55) !important;\n  backdrop-filter: blur(10px) !important;\n  -webkit-backdrop-filter: blur(10px) !important;\n  z-index: 3125 !important;\n}\n\n#pf-widget.pf-dock-left #pf-species-menu {\n  right: auto !important;\n  left: 0 !important;\n}\n\n#pf-widget.pf-dock-top #pf-species-menu {\n  bottom: auto !important;\n  top: calc(100% + 34px) !important;\n}\n\n#pf-species-menu.pf-open {\n  display: grid !important;\n  pointer-events: auto !important;\n  animation: pf-pop-in 0.15s ease-out;\n}\n\n.pf-sp-option {\n  display: flex !important;\n  align-items: center !important;\n  justify-content: center !important;\n  width: 28px !important;\n  height: 28px !important;\n  min-height: 28px !important;\n  padding: 0 !important;\n  margin: 0 !important;\n  border-radius: 8px !important;\n  background: rgba(255, 255, 255, 0.05) !important;\n  border: 1px solid transparent !important;\n  font-size: 15px !important;\n  line-height: 1 !important;\n  cursor: pointer !important;\n  box-shadow: none !important;\n  transition: transform 0.14s ease, background 0.14s ease;\n}\n\n.pf-sp-option:hover,\n.pf-sp-option:active {\n  transform: scale(1.12);\n  background: var(--pf-accent-soft) !important;\n}\n\n.pf-sp-option.pf-current {\n  border-color: var(--pf-accent) !important;\n  background: var(--pf-accent-soft) !important;\n}\n\n/* ---------- Selection \"Feed Quote\" Pill ---------- */\n#pf-feed-btn {\n  position: fixed;\n  z-index: 3300;\n  display: none;\n  align-items: center;\n  gap: 5px;\n  padding: 5px 11px;\n  border-radius: 999px;\n  background: rgba(28, 22, 36, 0.95);\n  color: #fff6ee;\n  border: 1px solid var(--pf-accent);\n  box-shadow: 0 5px 16px rgba(0, 0, 0, 0.55);\n  font-size: 12px;\n  font-weight: 600;\n  cursor: pointer;\n  user-select: none;\n  -webkit-user-select: none;\n  animation: pf-pop-in 0.16s ease-out;\n}\n\n/* ---------- Particles ---------- */\n.pf-flying-quote {\n  position: fixed;\n  z-index: 3250;\n  pointer-events: none;\n  padding: 4px 9px;\n  max-width: 170px;\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  border-radius: 10px;\n  background: rgba(255, 243, 224, 0.95);\n  color: #2c1e18;\n  font-size: 11px;\n  font-style: italic;\n  font-weight: 600;\n  box-shadow: 0 5px 14px rgba(0, 0, 0, 0.35);\n  transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.7s ease;\n}\n\n.pf-heart-particle {\n  position: fixed;\n  z-index: 3260;\n  pointer-events: none;\n  font-size: 13px;\n  filter: drop-shadow(0 2px 5px rgba(255, 105, 160, 0.45));\n  animation: pf-float-heart 1.1s cubic-bezier(0.22, 1, 0.36, 1) forwards;\n}\n\n/* ---------- Cozy Scrapbook Modal ---------- */\n#pf-modal-backdrop {\n  position: fixed;\n  inset: 0;\n  z-index: 3400;\n  background: rgba(10, 8, 14, 0.74);\n  backdrop-filter: blur(6px);\n  -webkit-backdrop-filter: blur(6px);\n  display: none;\n  align-items: center;\n  justify-content: center;\n  padding: 10px;\n}\n\n#pf-modal-backdrop.pf-open {\n  display: flex;\n}\n\n#pf-modal {\n  width: min(650px, 95vw);\n  max-height: 85vh;\n  background: #1b1622;\n  border: 1px solid rgba(255, 195, 150, 0.25);\n  border-radius: 18px;\n  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.7);\n  color: #f7efe6;\n  display: flex;\n  flex-direction: column;\n  overflow: hidden;\n  animation: pf-pop-in 0.18s ease-out;\n}\n\n.pf-modal-header {\n  padding: 12px 15px;\n  background: rgba(255, 255, 255, 0.03);\n  border-bottom: 1px solid rgba(255, 255, 255, 0.08);\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  gap: 10px;\n}\n\n.pf-modal-title {\n  font-size: 15px;\n  font-weight: 700;\n  display: flex;\n  align-items: center;\n  gap: 7px;\n}\n\n.pf-modal-close {\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  background: rgba(255, 255, 255, 0.08);\n  border: none;\n  color: #f7efe6;\n  width: 28px;\n  height: 28px;\n  border-radius: 50%;\n  font-size: 14px;\n  cursor: pointer;\n}\n\n.pf-modal-toolbar {\n  padding: 8px 14px;\n  display: flex;\n  flex-wrap: wrap;\n  gap: 6px;\n  align-items: center;\n  border-bottom: 1px solid rgba(255, 255, 255, 0.06);\n}\n\n.pf-chip {\n  background: rgba(255, 255, 255, 0.06);\n  border: 1px solid rgba(255, 255, 255, 0.1);\n  color: #d9cec3;\n  padding: 4px 10px;\n  border-radius: 999px;\n  font-size: 11.5px;\n  cursor: pointer;\n}\n\n.pf-chip.pf-active {\n  background: rgba(255, 140, 66, 0.24);\n  border-color: #ff8c42;\n  color: #fff;\n  font-weight: 600;\n}\n\n#pf-search-input {\n  flex: 1 1 140px;\n  min-width: 120px;\n  background: rgba(0, 0, 0, 0.3);\n  border: 1px solid rgba(255, 255, 255, 0.14);\n  color: #f7efe6;\n  border-radius: 999px;\n  padding: 5px 11px;\n  font-size: 12px;\n}\n\n#pf-quotes-list {\n  padding: 12px 14px;\n  overflow-y: auto;\n  display: flex;\n  flex-direction: column;\n  gap: 10px;\n  flex: 1;\n}\n\n.pf-empty-state {\n  text-align: center;\n  padding: 30px 14px;\n  color: #a99b90;\n  font-size: 13px;\n}\n\n.pf-quote-card {\n  position: relative;\n  background: linear-gradient(145deg, #272030, #201a28);\n  border: 1px solid rgba(255, 200, 160, 0.16);\n  border-radius: 13px;\n  padding: 12px 13px 10px;\n  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);\n  overflow: hidden;\n}\n\n.pf-card-top {\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  gap: 6px;\n  margin-bottom: 6px;\n  flex-wrap: wrap;\n}\n\n.pf-sticker {\n  display: inline-block;\n  padding: 2px 8px;\n  border-radius: 6px;\n  background: rgba(255, 150, 90, 0.18);\n  border: 1px dashed rgba(255, 168, 115, 0.5);\n  color: #ffc299;\n  font-size: 10.5px;\n  font-weight: 700;\n  transform: rotate(-1deg);\n}\n\n.pf-card-meta {\n  font-size: 11px;\n  color: #b0a296;\n}\n\n.pf-card-text {\n  font-size: 13px;\n  line-height: 1.48;\n  color: #fbf4ec;\n  margin: 5px 0 9px;\n  white-space: pre-wrap;\n  word-break: break-word;\n}\n\n.pf-card-actions {\n  display: flex;\n  align-items: center;\n  gap: 5px;\n  flex-wrap: wrap;\n}\n\n.pf-card-btn {\n  background: rgba(255, 255, 255, 0.06);\n  border: 1px solid rgba(255, 255, 255, 0.1);\n  color: #eee3d8;\n  border-radius: 7px;\n  padding: 4px 9px;\n  font-size: 11.5px;\n  cursor: pointer;\n  display: inline-flex;\n  align-items: center;\n  gap: 4px;\n}\n\n.pf-card-btn.pf-fav-active {\n  color: #ff7b9c;\n  border-color: rgba(255, 123, 156, 0.45);\n  background: rgba(255, 123, 156, 0.14);\n}\n\n/* ---------- Settings Panel ---------- */\n.pf-settings-grid {\n  display: flex;\n  flex-direction: column;\n  gap: 8px;\n  padding: 6px 2px;\n}\n\n.pf-settings-row {\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  gap: 10px;\n}\n\n.pf-settings-sub {\n  font-size: 11.5px;\n  opacity: 0.75;\n  margin-bottom: 4px;\n}\n\n/* ---------- Keyframes ---------- */\n@keyframes pf-breathe {\n  0%, 100% { transform: translateY(0) scale(1); }\n  50% { transform: translateY(-2px) scale(1.02, 0.98); }\n}\n\n@keyframes pf-tail-wag {\n  0%, 100% { transform: rotate(0deg); }\n  50% { transform: rotate(10deg); }\n}\n\n@keyframes pf-ear-twitch {\n  0%, 86%, 100% { transform: rotate(0deg); }\n  90% { transform: rotate(-9deg); }\n  95% { transform: rotate(4deg); }\n}\n\n@keyframes pf-blink {\n  0%, 92%, 100% { transform: scaleY(1); }\n  95% { transform: scaleY(0.08); }\n}\n\n@keyframes pf-blush-pulse {\n  0%, 100% { opacity: 0.62; }\n  50% { opacity: 0.88; }\n}\n\n@keyframes pf-hop {\n  0%, 100% { transform: translateY(0) scale(1); }\n  45% { transform: translateY(-9px) scale(1.06, 0.95); }\n}\n\n@keyframes pf-gnaw {\n  0%, 100% { transform: translate(0, 0) rotate(0deg); }\n  25% { transform: translate(-1.5px, 1.5px) rotate(-5deg); }\n  75% { transform: translate(1.5px, 1px) rotate(5deg); }\n}\n\n@keyframes pf-poke {\n  0%, 100% { transform: translateX(0); }\n  50% { transform: translateX(-6px) rotate(-6deg); }\n}\n\n@keyframes pf-sleep {\n  0%, 100% { transform: translateY(1.5px) scale(1, 0.96); }\n  50% { transform: translateY(0) scale(1.02, 0.99); }\n}\n\n@keyframes pf-purr-sway {\n  0%, 100% { transform: translateY(0) rotate(-4deg) scale(1.04, 0.96); }\n  50% { transform: translateY(-2px) rotate(4deg) scale(0.98, 1.03); }\n}\n\n@keyframes pf-pout-wiggle {\n  0%, 100% { transform: scale(1); }\n  30% { transform: scale(1.08, 0.93) rotate(-4deg); }\n  65% { transform: scale(1.06, 0.95) rotate(4deg); }\n}\n\n@keyframes pf-float-heart {\n  0% { opacity: 0; transform: translate(0, 3px) scale(0.5); }\n  20% { opacity: 1; transform: translate(var(--hx, 0px), -8px) scale(1.1); }\n  100% { opacity: 0; transform: translate(calc(var(--hx, 0px) * 1.6), -36px) scale(0.8); }\n}\n\n@keyframes pf-wing-l {\n  0%, 100% { transform: rotate(0deg) scale(1); }\n  50% { transform: rotate(-10deg) scale(1.04, 0.96); }\n}\n\n@keyframes pf-wing-r {\n  0%, 100% { transform: rotate(0deg) scale(1); }\n  50% { transform: rotate(10deg) scale(1.04, 0.96); }\n}\n\n@keyframes pf-pop-in {\n  from { opacity: 0; transform: scale(0.92); }\n  to { opacity: 1; transform: scale(1); }\n}\n";
+
+  function injectRuntimeStyles() {
+    let styleEl = document.getElementById('pf-runtime-css');
+    if (!styleEl) {
+      styleEl = document.createElement('style');
+      styleEl.id = 'pf-runtime-css';
+      document.head.appendChild(styleEl);
+    }
+    styleEl.textContent = RUNTIME_COMPACT_CSS;
+  }
+
   function escapeHtml(str) {
     return String(str || '')
       .replace(/&/g, '&amp;')
@@ -1229,8 +1489,29 @@
     const widget = document.getElementById('pf-widget');
     if (!widget) return;
     const rect = widget.getBoundingClientRect();
-    widget.classList.toggle('pf-dock-left', rect.left < window.innerWidth * 0.42);
-    widget.classList.toggle('pf-dock-top', rect.top < 175);
+    widget.classList.toggle('pf-dock-left', rect.left < window.innerWidth * 0.44);
+    widget.classList.toggle('pf-dock-top', rect.top < 155);
+  }
+
+  function revealMiniBar(durationMs = 4600) {
+    const widget = document.getElementById('pf-widget');
+    if (!widget) return;
+    widget.classList.add('pf-bar-open');
+    clearTimeout(runtime.barHideTimer);
+    runtime.barHideTimer = setTimeout(() => {
+      const spMenu = document.getElementById('pf-species-menu');
+      if (spMenu?.classList.contains('pf-open')) {
+        revealMiniBar(3500);
+        return;
+      }
+      widget.classList.remove('pf-bar-open');
+    }, durationMs);
+  }
+
+  function hideMiniBarNow() {
+    clearTimeout(runtime.barHideTimer);
+    document.getElementById('pf-species-menu')?.classList.remove('pf-open');
+    document.getElementById('pf-widget')?.classList.remove('pf-bar-open');
   }
 
   function refreshFamiliarAppearance() {
@@ -1241,7 +1522,10 @@
     const switchBtn = document.getElementById('pf-btn-species');
     if (!widget || !wrap) return;
 
+    const pxSize = Math.max(36, Math.min(86, Number(s.size) || 48));
+    widget.style.setProperty('--pf-size', pxSize + 'px');
     widget.classList.toggle('pf-hidden', !s.enabled);
+    widget.classList.toggle('pf-pin-bar', !!s.pinBar);
     widget.dataset.species = s.species;
 
     let effectiveState = runtime.visualState;
@@ -1270,10 +1554,16 @@
 
   function updateMiniBar() {
     const s = getSettings();
+    const total = s.quotes.length;
     const countEl = document.getElementById('pf-count-badge');
+    const cornerEl = document.getElementById('pf-corner-badge');
     const fillEl = document.getElementById('pf-hunger-fill');
     const trackEl = document.querySelector('#pf-mini-bar .pf-hunger-track');
-    if (countEl) countEl.textContent = String(s.quotes.length);
+    if (countEl) countEl.textContent = String(total);
+    if (cornerEl) {
+      cornerEl.textContent = String(total);
+      cornerEl.classList.toggle('pf-zero', total === 0);
+    }
     if (fillEl) fillEl.style.width = Math.max(8, Math.min(100, s.hunger ?? 80)) + '%';
     if (trackEl) {
       trackEl.title = `Настроение и сытость: ${s.hunger ?? 80}% (любит: ${getProfile().tasteLabel})`;
@@ -1310,13 +1600,13 @@
       anim = '',
       state = '',
       prop = undefined,
-      duration = 5600,
+      duration = 5000,
     } = opts;
 
     if (state) runtime.visualState = state;
     if (prop !== undefined) runtime.currentProp = prop;
     refreshFamiliarAppearance();
-    if (anim) setTempAnim(anim, Math.min(duration, 3200));
+    if (anim) setTempAnim(anim, Math.min(duration, 3000));
 
     const profile = getProfile();
     bubble.innerHTML = `
@@ -1343,17 +1633,19 @@
     runtime.poutingUntil = 0;
     runtime.tapTimestamps = [];
     adjustHunger(6);
-    spawnHeartParticles(6);
+    spawnHeartParticles(5);
+    revealMiniBar(4800);
     const profile = getProfile();
     showBubble(pick(profile.lines.pet), {
       anim: 'purr',
       state: 'purr',
       prop: '💕',
-      duration: 5400,
+      duration: 5000,
     });
   }
 
   function onFamiliarTap() {
+    revealMiniBar(5200);
     const now = Date.now();
     const s = getSettings();
     const profile = getProfile();
@@ -1363,7 +1655,7 @@
         anim: 'pout',
         state: 'pout',
         prop: '😤',
-        duration: 4500,
+        duration: 4200,
       });
       return;
     }
@@ -1378,7 +1670,7 @@
         anim: 'pout',
         state: 'pout',
         prop: '😤',
-        duration: 6500,
+        duration: 6000,
       });
       return;
     }
@@ -1389,7 +1681,7 @@
         anim: 'sleep',
         state: 'sleep',
         prop: '💤',
-        duration: 6000,
+        duration: 5500,
       });
       return;
     }
@@ -1399,26 +1691,27 @@
         anim: 'gnaw',
         state: 'pout',
         prop: '🥺',
-        duration: 5800,
+        duration: 5200,
       });
       return;
     }
 
-    const isSweetRoll = Math.random() < 0.55;
+    const isSweetRoll = Math.random() < 0.58;
     showBubble(pick(profile.lines.tap), {
       anim: 'hop',
       state: isSweetRoll ? 'happy' : 'sassy',
       prop: isSweetRoll ? '✨' : '',
-      duration: 4800,
+      duration: 4400,
     });
   }
 
   // ---------- Drag & Hold-to-Pet Positioning ----------
   function applySavedPosition(widget) {
     const s = getSettings();
+    const sz = Math.max(36, Math.min(86, Number(s.size) || 48));
     if (s.position && typeof s.position.left === 'number' && typeof s.position.top === 'number') {
-      const clampedLeft = Math.max(6, Math.min(window.innerWidth - 92, s.position.left));
-      const clampedTop = Math.max(46, Math.min(window.innerHeight - 118, s.position.top));
+      const clampedLeft = Math.max(4, Math.min(window.innerWidth - sz - 4, s.position.left));
+      const clampedTop = Math.max(42, Math.min(window.innerHeight - sz - 36, s.position.top));
       widget.style.left = clampedLeft + 'px';
       widget.style.top = clampedTop + 'px';
       widget.style.right = 'auto';
@@ -1467,8 +1760,9 @@
       }
       if (!moved) return;
 
-      const newLeft = Math.max(6, Math.min(window.innerWidth - 92, origLeft + dx));
-      const newTop = Math.max(46, Math.min(window.innerHeight - 118, origTop + dy));
+      const sz = Math.max(36, Math.min(86, Number(getSettings().size) || 48));
+      const newLeft = Math.max(4, Math.min(window.innerWidth - sz - 4, origLeft + dx));
+      const newTop = Math.max(42, Math.min(window.innerHeight - sz - 36, origTop + dy));
       widget.style.left = newLeft + 'px';
       widget.style.top = newTop + 'px';
       widget.style.right = 'auto';
@@ -1505,6 +1799,7 @@
 
   // ---------- Scrapbook Modal ----------
   function openScrapbook() {
+    hideMiniBarNow();
     const backdrop = document.getElementById('pf-modal-backdrop');
     if (!backdrop) return;
     backdrop.classList.add('pf-open');
@@ -1543,7 +1838,7 @@
     if (!filtered.length) {
       listEl.innerHTML = `
         <div class="pf-empty-state">
-          <div style="font-size:34px;margin-bottom:8px;">${profile.icon}💕</div>
+          <div style="font-size:32px;margin-bottom:8px;">${profile.icon}💕</div>
           <div>В норке по этому фильтру пока пусто!</div>
           <div style="font-size:12px;margin-top:6px;opacity:0.75;">
             Выдели любую красивую фразу в чате и нажми «🐾 Скормить» — или подожди, пока ${escapeHtml(getFamiliarName())} сам утащит понравившийся отрывок.
@@ -1582,7 +1877,7 @@
       .join('');
   }
 
-  // ---------- Selection "Feed" Button ----------
+  // ---------- Selection "Feed" Pill ----------
   function setupSelectionWatcher() {
     const feedBtn = document.getElementById('pf-feed-btn');
     if (!feedBtn) return;
@@ -1626,8 +1921,8 @@
       runtime.pendingSelectionRect = rect;
       runtime.pendingSelectionAuthor = mesAuthor;
 
-      const left = Math.max(10, Math.min(window.innerWidth - 155, rect.left + rect.width / 2 - 64));
-      const top = rect.top > 56 ? rect.top - 44 : Math.min(window.innerHeight - 50, rect.bottom + 10);
+      const left = Math.max(10, Math.min(window.innerWidth - 145, rect.left + rect.width / 2 - 58));
+      const top = rect.top > 52 ? rect.top - 40 : Math.min(window.innerHeight - 46, rect.bottom + 8);
 
       feedBtn.style.left = left + 'px';
       feedBtn.style.top = top + 'px';
@@ -1664,7 +1959,7 @@
           anim: 'purr',
           state: 'happy',
           prop: '💖',
-          duration: 6200,
+          duration: 5600,
         });
       }
     });
@@ -1692,7 +1987,7 @@
             anim: 'hop',
             state: 'pout',
             prop: '🥺',
-            duration: 5600,
+            duration: 5200,
           });
         }
 
@@ -1702,7 +1997,7 @@
             anim: 'hop',
             state: 'happy',
             prop: '✨',
-            duration: 5600,
+            duration: 5200,
           });
         }
 
@@ -1733,7 +2028,7 @@
           anim: 'hop',
           state: 'sassy',
           prop: '💭',
-          duration: 6200,
+          duration: 5800,
         });
       }
     }, 5000);
@@ -1795,7 +2090,7 @@
             anim: 'hop',
             state: 'happy',
             prop: '✨',
-            duration: 6500,
+            duration: 6000,
           });
           return;
         }
@@ -1804,23 +2099,23 @@
 
     if (mood === 'angst' && Math.random() < 0.65) {
       adjustHunger(profile.favMoods.includes('angst') ? 10 : 5);
-      showBubble(profile.lines.moods.angst, { state: 'idle', prop: '🥺', duration: 5600 });
+      showBubble(profile.lines.moods.angst, { state: 'idle', prop: '🥺', duration: 5200 });
       return;
     }
     if (mood === 'spicy' && Math.random() < 0.65) {
       adjustHunger(8);
-      showBubble(profile.lines.moods.spicy, { state: 'shy', prop: '🙈', duration: 5600 });
+      showBubble(profile.lines.moods.spicy, { state: 'shy', prop: '🙈', duration: 5200 });
       return;
     }
     if (mood === 'action' && Math.random() < 0.65) {
       adjustHunger(profile.favMoods.includes('action') ? 10 : 5);
-      showBubble(profile.lines.moods.action, { anim: 'hop', state: 'happy', prop: '🍿', duration: 5600 });
+      showBubble(profile.lines.moods.action, { anim: 'hop', state: 'happy', prop: '🍿', duration: 5200 });
       return;
     }
 
     adjustHunger(-5);
     if ((s.hunger ?? 80) < 25 && Math.random() < 0.55) {
-      showBubble(pick(profile.lines.hungry), { anim: 'gnaw', state: 'pout', prop: '🥺', duration: 5600 });
+      showBubble(pick(profile.lines.hungry), { anim: 'gnaw', state: 'pout', prop: '🥺', duration: 5200 });
     }
   }
 
@@ -1845,7 +2140,7 @@
             anim: 'hop',
             state: 'happy',
             prop: '✨',
-            duration: 6800,
+            duration: 6200,
           });
           return;
         }
@@ -1863,7 +2158,7 @@
         anim: 'pout',
         state: 'sassy',
         prop: '💫',
-        duration: 5600,
+        duration: 5200,
       });
     }
   }
@@ -1877,7 +2172,7 @@
         anim: 'poke',
         state: 'sassy',
         prop: '🐾',
-        duration: 5400,
+        duration: 5000,
       });
     }, 9500);
   }
@@ -1911,7 +2206,7 @@
     refreshFamiliarAppearance();
 
     const s = getSettings();
-    if (s.enabled && s.quotes.length >= 3 && Math.random() < 0.32) {
+    if (s.enabled && s.quotes.length >= 3 && Math.random() < 0.3) {
       setTimeout(() => {
         const oldQuote = pick(s.quotes);
         if (oldQuote) {
@@ -1920,7 +2215,7 @@
             anim: 'hop',
             state: 'happy',
             prop: '💌',
-            duration: 6800,
+            duration: 6200,
           });
         }
       }, 1400);
@@ -1936,44 +2231,45 @@
     refreshFamiliarAppearance();
     spawnHeartParticles(4);
     const prof = getProfile(newSp);
-    showBubble(prof.greeting, { anim: 'hop', state: 'happy', prop: '💕', duration: 5200 });
+    showBubble(prof.greeting, { anim: 'hop', state: 'happy', prop: '💕', duration: 4800 });
   }
 
-  // ---------- Build DOM Elements & Settings Panel ----------
+  // ---------- Build Ultra-Compact DOM & Settings Panel ----------
   function mountFloatingUI() {
     if (document.getElementById('pf-widget')) return;
 
-    const speciesButtonsHtml = SPECIES_ORDER.map((sp) => {
+    const speciesOptionsHtml = SPECIES_ORDER.map((sp) => {
       const p = FAMILIAR_PROFILES[sp];
-      return `<button class="pf-sp-option" type="button" data-sp="${sp}" title="${p.defaultName}">${p.icon}</button>`;
+      return `<div class="pf-sp-option" role="button" tabindex="0" data-sp="${sp}" title="${p.defaultName}">${p.icon}</div>`;
     }).join('');
 
     const widget = document.createElement('div');
     widget.id = 'pf-widget';
     widget.innerHTML = `
       <div id="pf-bubble" title="Нажми, чтобы скрыть"></div>
+      <div id="pf-species-menu">${speciesOptionsHtml}</div>
       <div id="pf-stage" title="Ткни, перетащи или удержи пальчик, чтобы погладить!">
         <div id="pf-avatar-wrap"></div>
         <div id="pf-prop-badge"></div>
+        <div id="pf-corner-badge" class="pf-zero">0</div>
       </div>
-      <div id="pf-mini-bar" style="position:relative;">
-        <div id="pf-species-menu">${speciesButtonsHtml}</div>
-        <button class="pf-mini-btn" id="pf-btn-book" title="Открыть норку цитат">
+      <div id="pf-mini-bar">
+        <div class="pf-ico-btn" role="button" tabindex="0" id="pf-btn-book" title="Открыть норку цитат">
           📚 <span id="pf-count-badge">0</span>
-        </button>
+        </div>
         <div class="pf-hunger-track" title="Настроение и сытость">
           <div id="pf-hunger-fill"></div>
         </div>
-        <button class="pf-mini-btn" id="pf-btn-pet" title="Погладить зверька 💕">💕</button>
-        <button class="pf-mini-btn" id="pf-btn-plot" title="Пнуть сюжет (идея для хода)">🎲</button>
-        <button class="pf-mini-btn" id="pf-btn-species" title="Выбрать зверька">🦊</button>
+        <div class="pf-ico-btn" role="button" tabindex="0" id="pf-btn-pet" title="Погладить 💕">💕</div>
+        <div class="pf-ico-btn" role="button" tabindex="0" id="pf-btn-plot" title="Идея для сцены 🎲">🎲</div>
+        <div class="pf-ico-btn" role="button" tabindex="0" id="pf-btn-species" title="Выбрать зверька">🦊</div>
       </div>
     `;
     document.body.appendChild(widget);
 
-    const feedBtn = document.createElement('button');
+    const feedBtn = document.createElement('div');
     feedBtn.id = 'pf-feed-btn';
-    feedBtn.type = 'button';
+    feedBtn.setAttribute('role', 'button');
     feedBtn.innerHTML = '🐾 Скормить';
     document.body.appendChild(feedBtn);
 
@@ -2017,17 +2313,19 @@
 
     document.getElementById('pf-btn-plot')?.addEventListener('click', (e) => {
       e.stopPropagation();
+      revealMiniBar(4800);
       showBubble('Идея для сцены: ' + pick(PLOT_PROMPTS), {
         anim: 'hop',
         state: 'happy',
         prop: '🎲',
-        duration: 7500,
+        duration: 6800,
       });
     });
 
     const spMenu = document.getElementById('pf-species-menu');
     document.getElementById('pf-btn-species')?.addEventListener('click', (e) => {
       e.stopPropagation();
+      revealMiniBar(6000);
       spMenu?.classList.toggle('pf-open');
     });
 
@@ -2040,8 +2338,8 @@
     });
 
     document.addEventListener('pointerdown', (e) => {
-      if (spMenu?.classList.contains('pf-open') && !e.target.closest('#pf-mini-bar')) {
-        spMenu.classList.remove('pf-open');
+      if (!e.target.closest('#pf-widget')) {
+        hideMiniBarNow();
       }
     });
 
@@ -2108,6 +2406,8 @@
     setVal('pf_set_enabled', s.enabled, true);
     setVal('pf_set_species', s.species);
     setVal('pf_set_name', s.customName);
+    setVal('pf_set_size', s.size || 48);
+    setVal('pf_set_pinbar', !!s.pinBar, true);
     setVal('pf_set_autosnatch', s.autoSnatch, true);
     setVal('pf_set_chance', Math.round((s.snatchChance ?? 0.58) * 100));
     setVal('pf_set_rescue', s.rescueSwipes, true);
@@ -2122,6 +2422,8 @@
 
     const chanceLbl = document.getElementById('pf_set_chance_val');
     if (chanceLbl) chanceLbl.textContent = Math.round((s.snatchChance ?? 0.58) * 100) + '%';
+    const sizeLbl = document.getElementById('pf_set_size_val');
+    if (sizeLbl) sizeLbl.textContent = (s.size || 48) + 'px';
   }
 
   function mountSettingsPanel() {
@@ -2142,7 +2444,7 @@
     wrapper.className = 'inline-drawer';
     wrapper.innerHTML = `
       <div class="inline-drawer-toggle inline-drawer-header">
-        <b>🐾 Pocket Familiar (Чиби-тамагочи цитат)</b>
+        <b>🐝 Pocket Familiar (Компактный тамагочи цитат)</b>
         <div class="inline-drawer-icon fa-solid fa-circle-chevron-down down"></div>
       </div>
       <div class="inline-drawer-content pf-settings-grid">
@@ -2160,12 +2462,27 @@
             <option value="dragon">🐉 Дракончик (хранитель сокровищ)</option>
             <option value="hamster">🐹 Хомячок (пухлые щёчки)</option>
             <option value="shark">🦈 Акулёнок (добрый кусь)</option>
+            <option value="bee">🐝 Шмелик (пушистый мёд)</option>
+            <option value="spider">🕷️ Паучок (пушистый скакунчик)</option>
           </select>
         </div>
 
         <div>
+          <div class="pf-settings-row">
+            <span>Размер зверька:</span>
+            <b id="pf_set_size_val">48px</b>
+          </div>
+          <input id="pf_set_size" type="range" min="36" max="86" step="2" />
+        </div>
+
+        <label class="checkbox_label">
+          <input id="pf_set_pinbar" type="checkbox" />
+          <span>Всегда показывать мини-панельку (иначе — только по тыку)</span>
+        </label>
+
+        <div>
           <label for="pf_set_name">Своё имя зверька (необязательно):</label>
-          <input id="pf_set_name" type="text" class="text_pole" placeholder="Например: Бусинка, Пых или Плавничок" />
+          <input id="pf_set_name" type="text" class="text_pole" placeholder="Например: Жжужа, Бусинка или Плавничок" />
         </div>
 
         <label class="checkbox_label">
@@ -2202,7 +2519,7 @@
         </label>
 
         <details style="margin-top:4px;">
-          <summary style="cursor:pointer;font-weight:600;">🎨 Свои PNG / GIF спрайты (для любого из 6 зверьков)</summary>
+          <summary style="cursor:pointer;font-weight:600;">🎨 Свои PNG / GIF спрайты (для любого из 8 зверьков)</summary>
           <div class="pf-settings-grid" style="margin-top:6px;">
             <div class="pf-settings-sub">Оставь пустым для встроенных моргающих чибиков:</div>
             ${spriteInputsHtml}
@@ -2231,6 +2548,21 @@
 
     bind('pf_set_species', (e) => {
       switchSpecies(e.target.value);
+    });
+
+    bind('pf_set_size', (e) => {
+      const v = Math.max(36, Math.min(86, Number(e.target.value) || 48));
+      getSettings().size = v;
+      const lbl = document.getElementById('pf_set_size_val');
+      if (lbl) lbl.textContent = v + 'px';
+      saveSettings();
+      refreshFamiliarAppearance();
+    }, 'input');
+
+    bind('pf_set_pinbar', (e) => {
+      getSettings().pinBar = e.target.checked;
+      saveSettings();
+      refreshFamiliarAppearance();
     });
 
     bind('pf_set_name', (e) => {
@@ -2295,8 +2627,8 @@
       if (widget) {
         widget.style.left = '';
         widget.style.top = '';
-        widget.style.right = '18px';
-        widget.style.bottom = '110px';
+        widget.style.right = '12px';
+        widget.style.bottom = '108px';
         updateBubbleDocking();
       }
     });
@@ -2309,6 +2641,7 @@
     if (!ctx) return;
     runtime.initialized = true;
 
+    injectRuntimeStyles();
     mountFloatingUI();
     mountSettingsPanel();
     setupInputAndIdleWatcher();
@@ -2333,13 +2666,13 @@
       if (s.enabled) {
         const hour = new Date().getHours();
         if (s.nightMode && hour >= 1 && hour <= 5) {
-          showBubble(pick(getProfile().lines.night), { state: 'sleep', prop: '💤', duration: 5500 });
+          showBubble(pick(getProfile().lines.night), { state: 'sleep', prop: '💤', duration: 5000 });
         } else {
           showBubble(getProfile().greeting, {
             anim: 'hop',
             state: 'happy',
             prop: '💕',
-            duration: 5000,
+            duration: 4600,
           });
         }
       }

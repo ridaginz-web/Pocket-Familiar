@@ -1,12 +1,12 @@
 /* ==========================================================================
-   Pocket Familiar — Interactive Tamagotchi & Quote Collector for SillyTavern
+   Pocket Familiar v1.2 — Ultra-Compact Mobile Edition for SillyTavern
    ========================================================================== */
 
 :root {
   --pf-accent: #ff8c42;
   --pf-accent-soft: rgba(255, 140, 66, 0.22);
-  --pf-bg-glass: rgba(24, 20, 28, 0.92);
-  --pf-card-bg: rgba(36, 30, 42, 0.95);
+  --pf-bg-glass: rgba(20, 17, 26, 0.92);
+  --pf-card-bg: rgba(34, 28, 42, 0.96);
   --pf-text: #f7efe6;
   --pf-text-dim: #bbaea3;
   --pf-border: rgba(255, 185, 130, 0.28);
@@ -14,24 +14,62 @@
 
 #pf-widget[data-species="bunny"] {
   --pf-accent: #f48fb1;
-  --pf-accent-soft: rgba(244, 143, 177, 0.22);
+  --pf-accent-soft: rgba(244, 143, 177, 0.24);
   --pf-border: rgba(244, 165, 193, 0.32);
 }
 
-/* ---------- Floating Widget ---------- */
+#pf-widget[data-species="kitten"] {
+  --pf-accent: #ffa8c5;
+  --pf-accent-soft: rgba(255, 168, 197, 0.24);
+  --pf-border: rgba(255, 188, 210, 0.32);
+}
+
+#pf-widget[data-species="dragon"] {
+  --pf-accent: #b392ff;
+  --pf-accent-soft: rgba(179, 146, 255, 0.24);
+  --pf-border: rgba(196, 170, 255, 0.32);
+}
+
+#pf-widget[data-species="hamster"] {
+  --pf-accent: #ffc266;
+  --pf-accent-soft: rgba(255, 194, 102, 0.24);
+  --pf-border: rgba(255, 210, 140, 0.32);
+}
+
+#pf-widget[data-species="shark"] {
+  --pf-accent: #6ecbff;
+  --pf-accent-soft: rgba(110, 203, 255, 0.24);
+  --pf-border: rgba(145, 216, 255, 0.32);
+}
+
+#pf-widget[data-species="bee"] {
+  --pf-accent: #ffd54f;
+  --pf-accent-soft: rgba(255, 213, 79, 0.24);
+  --pf-border: rgba(255, 224, 115, 0.36);
+}
+
+#pf-widget[data-species="spider"] {
+  --pf-accent: #c9a7ff;
+  --pf-accent-soft: rgba(201, 167, 255, 0.24);
+  --pf-border: rgba(215, 190, 255, 0.36);
+}
+
+/* ---------- Compact Floating Widget ---------- */
 #pf-widget {
+  --pf-size: 48px;
   position: fixed;
-  right: 18px;
-  bottom: 110px;
+  right: 12px;
+  bottom: 108px;
   z-index: 3100;
+  width: var(--pf-size);
+  height: var(--pf-size);
   display: flex;
-  flex-direction: column;
   align-items: center;
+  justify-content: center;
   user-select: none;
   -webkit-user-select: none;
   font-family: inherit;
   pointer-events: none;
-  transition: opacity 0.25s ease;
 }
 
 #pf-widget.pf-hidden {
@@ -42,29 +80,28 @@
   box-sizing: border-box;
 }
 
-/* ---------- Speech Bubble ---------- */
+/* ---------- Compact Speech Bubble ---------- */
 #pf-bubble {
-  pointer-events: auto;
   position: absolute;
-  bottom: calc(100% + 10px);
+  bottom: calc(100% + 7px);
   right: 0;
   width: max-content;
-  max-width: min(270px, 76vw);
-  padding: 10px 13px;
-  border-radius: 16px 16px 4px 16px;
+  max-width: min(195px, 60vw);
+  padding: 6px 9px;
+  border-radius: 13px 13px 3px 13px;
   background: var(--pf-bg-glass);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border: 1px solid var(--pf-border);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45), 0 0 14px var(--pf-accent-soft);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.48);
   color: var(--pf-text);
-  font-size: 13px;
-  line-height: 1.42;
+  font-size: 11.5px;
+  line-height: 1.36;
   opacity: 0;
-  transform: translateY(8px) scale(0.94);
-  transition: opacity 0.22s ease, transform 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+  transform: translateY(6px) scale(0.94);
+  transition: opacity 0.2s ease, transform 0.2s cubic-bezier(0.22, 1, 0.36, 1);
   pointer-events: none;
-  z-index: 3105;
+  z-index: 3115;
 }
 
 #pf-bubble.pf-visible {
@@ -77,30 +114,26 @@
 #pf-widget.pf-dock-left #pf-bubble {
   right: auto;
   left: 0;
-  border-radius: 16px 16px 16px 4px;
+  border-radius: 13px 13px 13px 3px;
 }
 
 #pf-widget.pf-dock-top #pf-bubble {
   bottom: auto;
-  top: calc(100% + 10px);
-  border-radius: 16px 4px 16px 16px;
+  top: calc(100% + 34px);
+  border-radius: 13px 3px 13px 13px;
 }
 
 #pf-widget.pf-dock-left.pf-dock-top #pf-bubble {
-  border-radius: 4px 16px 16px 16px;
+  border-radius: 3px 13px 13px 13px;
 }
 
 .pf-bubble-speaker {
-  font-size: 10.5px;
+  font-size: 9.5px;
   font-weight: 700;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.03em;
   text-transform: uppercase;
   color: var(--pf-accent);
-  margin-bottom: 3px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 6px;
+  margin-bottom: 2px;
 }
 
 .pf-bubble-text {
@@ -108,33 +141,32 @@
 }
 
 .pf-bubble-quote {
-  margin-top: 6px;
-  padding: 5px 8px;
+  margin-top: 4px;
+  padding: 3px 6px;
   border-left: 2px solid var(--pf-accent);
   background: rgba(255, 255, 255, 0.05);
-  border-radius: 0 8px 8px 0;
+  border-radius: 0 6px 6px 0;
   font-style: italic;
-  font-size: 11.5px;
+  font-size: 10.5px;
   color: var(--pf-text-dim);
   display: -webkit-box;
-  -webkit-line-clamp: 3;
+  -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
 
-/* ---------- Familiar Stage & Sprite ---------- */
+/* ---------- Familiar Stage & Chibi Sprite ---------- */
 #pf-stage {
   pointer-events: auto;
   position: relative;
-  width: 78px;
-  height: 78px;
+  width: var(--pf-size);
+  height: var(--pf-size);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: grab;
   touch-action: none;
-  filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.45));
-  transition: transform 0.2s ease;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.42));
 }
 
 #pf-stage:active {
@@ -142,8 +174,8 @@
 }
 
 #pf-avatar-wrap {
-  width: 74px;
-  height: 74px;
+  width: 100%;
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -158,13 +190,57 @@
 }
 
 #pf-avatar-wrap img.pf-custom-sprite {
-  width: 70px;
-  height: 70px;
+  width: 100%;
+  height: 100%;
   object-fit: contain;
   pointer-events: none;
 }
 
-/* Tail & Ears subtle motion inside SVG */
+/* Tiny Corner Quote Badge (like ST floating badges) */
+#pf-corner-badge {
+  position: absolute;
+  bottom: -1px;
+  right: -2px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: 999px;
+  background: rgba(24, 20, 30, 0.92);
+  border: 1px solid var(--pf-border);
+  color: var(--pf-accent);
+  font-size: 9.5px;
+  font-weight: 700;
+  line-height: 14px;
+  text-align: center;
+  pointer-events: none;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.45);
+  transition: opacity 0.18s ease;
+}
+
+#pf-corner-badge.pf-zero,
+#pf-widget.pf-bar-open #pf-corner-badge,
+#pf-widget.pf-pin-bar #pf-corner-badge {
+  opacity: 0;
+}
+
+/* Prop Badge */
+#pf-prop-badge {
+  position: absolute;
+  top: -3px;
+  right: -3px;
+  font-size: 13px;
+  line-height: 1;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.6));
+  pointer-events: none;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+#pf-prop-badge:empty {
+  opacity: 0;
+  transform: scale(0.5);
+}
+
+/* Chibi SVG animations */
 #pf-widget .pf-svg-tail {
   transform-origin: 58px 56px;
   animation: pf-tail-wag 2.8s ease-in-out infinite;
@@ -175,9 +251,27 @@
   animation: pf-ear-twitch 5s ease-in-out infinite;
 }
 
-/* Mood / State Animations */
+#pf-widget .pf-svg-eyes-open {
+  transform-origin: 42px 43px;
+  animation: pf-blink 4.6s ease-in-out infinite;
+}
+
+#pf-widget .pf-svg-blush {
+  animation: pf-blush-pulse 3s ease-in-out infinite;
+}
+
+#pf-widget .pf-svg-wing-l {
+  transform-origin: 26px 46px;
+  animation: pf-wing-l 0.45s ease-in-out infinite;
+}
+
+#pf-widget .pf-svg-wing-r {
+  transform-origin: 58px 46px;
+  animation: pf-wing-r 0.45s ease-in-out infinite;
+}
+
 #pf-widget[data-anim="hop"] #pf-avatar-wrap {
-  animation: pf-hop 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) 2;
+  animation: pf-hop 0.52s cubic-bezier(0.34, 1.56, 0.64, 1) 2;
 }
 
 #pf-widget[data-anim="gnaw"] #pf-avatar-wrap {
@@ -192,133 +286,215 @@
   animation: pf-sleep 4.2s ease-in-out infinite;
 }
 
-#pf-widget[data-anim="turnaway"] #pf-avatar-wrap {
-  transform: scaleX(-1) rotate(-6deg);
-  animation: none;
+#pf-widget[data-anim="purr"] #pf-avatar-wrap {
+  animation: pf-purr-sway 0.65s ease-in-out infinite;
 }
 
-/* Prop Badge (Popcorn, Blanket, Stick, Zzz, Shy) */
-#pf-prop-badge {
-  position: absolute;
-  top: -2px;
-  right: -2px;
-  font-size: 18px;
-  line-height: 1;
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.6));
-  pointer-events: none;
-  transition: transform 0.25s ease, opacity 0.25s ease;
+#pf-widget[data-anim="pout"] #pf-avatar-wrap {
+  animation: pf-pout-wiggle 0.55s ease-in-out 2;
 }
 
-#pf-prop-badge:empty {
-  opacity: 0;
-  transform: scale(0.5);
-}
-
-/* ---------- Mini Tamagotchi Control Pill ---------- */
+/* ---------- Auto-Hiding Sleek Micro-Bar ---------- */
 #pf-mini-bar {
+  position: absolute !important;
+  top: calc(100% + 4px) !important;
+  right: 0 !important;
+  height: 26px !important;
+  width: max-content !important;
+  display: inline-flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  gap: 3px !important;
+  padding: 2px 6px !important;
+  border-radius: 999px !important;
+  background: var(--pf-bg-glass) !important;
+  border: 1px solid var(--pf-border) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.45) !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+  opacity: 0;
+  transform: translateY(-4px) scale(0.92);
+  pointer-events: none;
+  transition: opacity 0.18s ease, transform 0.18s ease;
+  z-index: 3110;
+}
+
+#pf-widget.pf-dock-left #pf-mini-bar {
+  right: auto !important;
+  left: 0 !important;
+}
+
+#pf-widget.pf-bar-open #pf-mini-bar,
+#pf-widget.pf-pin-bar #pf-mini-bar {
+  opacity: 1;
+  transform: translateY(0) scale(1);
   pointer-events: auto;
-  margin-top: 2px;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  padding: 4px 8px;
-  border-radius: 999px;
-  background: var(--pf-bg-glass);
-  border: 1px solid var(--pf-border);
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
 }
 
-.pf-mini-btn {
-  background: transparent;
-  border: none;
-  color: var(--pf-text);
-  font-size: 13px;
-  padding: 3px 5px;
-  border-radius: 999px;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 3px;
-  line-height: 1;
-  transition: background 0.15s ease, transform 0.15s ease;
+.pf-ico-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 2px !important;
+  height: 20px !important;
+  min-width: 20px !important;
+  padding: 0 4px !important;
+  margin: 0 !important;
+  border: none !important;
+  border-radius: 999px !important;
+  background: transparent !important;
+  color: var(--pf-text) !important;
+  font-size: 12px !important;
+  line-height: 1 !important;
+  cursor: pointer !important;
+  box-shadow: none !important;
+  transition: background 0.14s ease, transform 0.14s ease;
 }
 
-.pf-mini-btn:hover,
-.pf-mini-btn:active {
-  background: var(--pf-accent-soft);
-  transform: scale(1.08);
+.pf-ico-btn:hover,
+.pf-ico-btn:active {
+  background: var(--pf-accent-soft) !important;
+  transform: scale(1.1);
 }
 
 #pf-count-badge {
-  font-size: 10.5px;
-  font-weight: 700;
-  color: var(--pf-accent);
+  font-size: 9.5px !important;
+  font-weight: 700 !important;
+  color: var(--pf-accent) !important;
 }
 
 .pf-hunger-track {
-  width: 34px;
-  height: 6px;
-  background: rgba(255, 255, 255, 0.12);
-  border-radius: 999px;
-  overflow: hidden;
-  position: relative;
+  width: 22px !important;
+  height: 4px !important;
+  background: rgba(255, 255, 255, 0.14) !important;
+  border-radius: 999px !important;
+  overflow: hidden !important;
+  flex-shrink: 0 !important;
 }
 
 #pf-hunger-fill {
-  height: 100%;
-  width: 75%;
-  background: linear-gradient(90deg, #ff6b6b, var(--pf-accent), #7bed9f);
-  border-radius: 999px;
+  height: 100% !important;
+  width: 80%;
+  background: linear-gradient(90deg, #ff6b6b, var(--pf-accent), #7bed9f) !important;
+  border-radius: 999px !important;
   transition: width 0.4s ease;
 }
 
-/* ---------- Selection "Feed Quote" Floating Button ---------- */
+/* ---------- Compact 3x2 Species Grid Popover ---------- */
+#pf-species-menu {
+  position: absolute !important;
+  bottom: calc(100% + 6px) !important;
+  right: 0 !important;
+  display: none !important;
+  grid-template-columns: repeat(4, 28px) !important;
+  gap: 4px !important;
+  padding: 5px !important;
+  width: max-content !important;
+  height: auto !important;
+  border-radius: 12px !important;
+  background: var(--pf-bg-glass) !important;
+  border: 1px solid var(--pf-border) !important;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.55) !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+  z-index: 3125 !important;
+}
+
+#pf-widget.pf-dock-left #pf-species-menu {
+  right: auto !important;
+  left: 0 !important;
+}
+
+#pf-widget.pf-dock-top #pf-species-menu {
+  bottom: auto !important;
+  top: calc(100% + 34px) !important;
+}
+
+#pf-species-menu.pf-open {
+  display: grid !important;
+  pointer-events: auto !important;
+  animation: pf-pop-in 0.15s ease-out;
+}
+
+.pf-sp-option {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 28px !important;
+  height: 28px !important;
+  min-height: 28px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border-radius: 8px !important;
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid transparent !important;
+  font-size: 15px !important;
+  line-height: 1 !important;
+  cursor: pointer !important;
+  box-shadow: none !important;
+  transition: transform 0.14s ease, background 0.14s ease;
+}
+
+.pf-sp-option:hover,
+.pf-sp-option:active {
+  transform: scale(1.12);
+  background: var(--pf-accent-soft) !important;
+}
+
+.pf-sp-option.pf-current {
+  border-color: var(--pf-accent) !important;
+  background: var(--pf-accent-soft) !important;
+}
+
+/* ---------- Selection "Feed Quote" Pill ---------- */
 #pf-feed-btn {
   position: fixed;
   z-index: 3300;
   display: none;
   align-items: center;
-  gap: 6px;
-  padding: 7px 13px;
+  gap: 5px;
+  padding: 5px 11px;
   border-radius: 999px;
-  background: linear-gradient(135deg, #2b2233, #1d1724);
+  background: rgba(28, 22, 36, 0.95);
   color: #fff6ee;
   border: 1px solid var(--pf-accent);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.55), 0 0 12px var(--pf-accent-soft);
-  font-size: 13px;
+  box-shadow: 0 5px 16px rgba(0, 0, 0, 0.55);
+  font-size: 12px;
   font-weight: 600;
   cursor: pointer;
   user-select: none;
   -webkit-user-select: none;
-  animation: pf-pop-in 0.18s ease-out;
+  animation: pf-pop-in 0.16s ease-out;
 }
 
-#pf-feed-btn:hover,
-#pf-feed-btn:active {
-  transform: translateY(-1px) scale(1.04);
-  background: linear-gradient(135deg, #392c44, #251c2e);
-}
-
-/* ---------- Flying Snatched Quote Particle ---------- */
+/* ---------- Particles ---------- */
 .pf-flying-quote {
   position: fixed;
   z-index: 3250;
   pointer-events: none;
-  padding: 6px 11px;
-  max-width: 200px;
+  padding: 4px 9px;
+  max-width: 170px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  border-radius: 12px;
+  border-radius: 10px;
   background: rgba(255, 243, 224, 0.95);
   color: #2c1e18;
-  font-size: 12px;
+  font-size: 11px;
   font-style: italic;
   font-weight: 600;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
-  transition: transform 0.72s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.72s ease;
+  box-shadow: 0 5px 14px rgba(0, 0, 0, 0.35);
+  transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.7s ease;
+}
+
+.pf-heart-particle {
+  position: fixed;
+  z-index: 3260;
+  pointer-events: none;
+  font-size: 13px;
+  filter: drop-shadow(0 2px 5px rgba(255, 105, 160, 0.45));
+  animation: pf-float-heart 1.1s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
 /* ---------- Cozy Scrapbook Modal ---------- */
@@ -332,7 +508,7 @@
   display: none;
   align-items: center;
   justify-content: center;
-  padding: 12px;
+  padding: 10px;
 }
 
 #pf-modal-backdrop.pf-open {
@@ -340,57 +516,56 @@
 }
 
 #pf-modal {
-  width: min(680px, 95vw);
-  max-height: 86vh;
+  width: min(650px, 95vw);
+  max-height: 85vh;
   background: #1b1622;
   border: 1px solid rgba(255, 195, 150, 0.25);
-  border-radius: 20px;
-  box-shadow: 0 20px 55px rgba(0, 0, 0, 0.7);
+  border-radius: 18px;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.7);
   color: #f7efe6;
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  animation: pf-pop-in 0.2s ease-out;
+  animation: pf-pop-in 0.18s ease-out;
 }
 
 .pf-modal-header {
-  padding: 15px 18px;
+  padding: 12px 15px;
   background: rgba(255, 255, 255, 0.03);
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
+  gap: 10px;
 }
 
 .pf-modal-title {
-  font-size: 17px;
+  font-size: 15px;
   font-weight: 700;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 7px;
 }
 
 .pf-modal-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   background: rgba(255, 255, 255, 0.08);
   border: none;
   color: #f7efe6;
-  width: 32px;
-  height: 32px;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
-  font-size: 16px;
+  font-size: 14px;
   cursor: pointer;
 }
 
-.pf-modal-close:hover {
-  background: rgba(255, 120, 120, 0.28);
-}
-
 .pf-modal-toolbar {
-  padding: 10px 16px;
+  padding: 8px 14px;
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 6px;
   align-items: center;
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
@@ -399,11 +574,10 @@
   background: rgba(255, 255, 255, 0.06);
   border: 1px solid rgba(255, 255, 255, 0.1);
   color: #d9cec3;
-  padding: 5px 11px;
+  padding: 4px 10px;
   border-radius: 999px;
-  font-size: 12px;
+  font-size: 11.5px;
   cursor: pointer;
-  transition: all 0.15s ease;
 }
 
 .pf-chip.pf-active {
@@ -414,100 +588,81 @@
 }
 
 #pf-search-input {
-  flex: 1 1 160px;
-  min-width: 140px;
+  flex: 1 1 140px;
+  min-width: 120px;
   background: rgba(0, 0, 0, 0.3);
   border: 1px solid rgba(255, 255, 255, 0.14);
   color: #f7efe6;
   border-radius: 999px;
-  padding: 6px 12px;
-  font-size: 12.5px;
+  padding: 5px 11px;
+  font-size: 12px;
 }
 
 #pf-quotes-list {
-  padding: 14px 16px;
+  padding: 12px 14px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
   flex: 1;
 }
 
 .pf-empty-state {
   text-align: center;
-  padding: 36px 16px;
+  padding: 30px 14px;
   color: #a99b90;
-  font-size: 14px;
+  font-size: 13px;
 }
 
-/* Scrapbook Quote Card */
 .pf-quote-card {
   position: relative;
   background: linear-gradient(145deg, #272030, #201a28);
   border: 1px solid rgba(255, 200, 160, 0.16);
-  border-radius: 14px;
-  padding: 14px 15px 12px;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.28);
+  border-radius: 13px;
+  padding: 12px 13px 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
   overflow: hidden;
-}
-
-.pf-quote-card::after {
-  content: "🐾";
-  position: absolute;
-  right: 12px;
-  bottom: 8px;
-  font-size: 28px;
-  opacity: 0.07;
-  transform: rotate(-18deg);
-  pointer-events: none;
 }
 
 .pf-card-top {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 8px;
-  margin-bottom: 8px;
+  gap: 6px;
+  margin-bottom: 6px;
   flex-wrap: wrap;
 }
 
 .pf-sticker {
   display: inline-block;
-  padding: 3px 9px;
+  padding: 2px 8px;
   border-radius: 6px;
   background: rgba(255, 150, 90, 0.18);
   border: 1px dashed rgba(255, 168, 115, 0.5);
   color: #ffc299;
-  font-size: 11px;
+  font-size: 10.5px;
   font-weight: 700;
-  transform: rotate(-1.5deg);
+  transform: rotate(-1deg);
 }
 
 .pf-card-meta {
-  font-size: 11.5px;
+  font-size: 11px;
   color: #b0a296;
 }
 
 .pf-card-text {
-  font-size: 14px;
-  line-height: 1.52;
+  font-size: 13px;
+  line-height: 1.48;
   color: #fbf4ec;
-  margin: 6px 0 10px;
+  margin: 5px 0 9px;
   white-space: pre-wrap;
   word-break: break-word;
-}
-
-.pf-card-note {
-  font-size: 12px;
-  color: #d6b89c;
-  font-style: italic;
-  margin-bottom: 10px;
 }
 
 .pf-card-actions {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
   flex-wrap: wrap;
 }
 
@@ -515,18 +670,13 @@
   background: rgba(255, 255, 255, 0.06);
   border: 1px solid rgba(255, 255, 255, 0.1);
   color: #eee3d8;
-  border-radius: 8px;
-  padding: 5px 10px;
-  font-size: 12px;
+  border-radius: 7px;
+  padding: 4px 9px;
+  font-size: 11.5px;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  transition: background 0.15s ease;
-}
-
-.pf-card-btn:hover {
-  background: rgba(255, 255, 255, 0.14);
+  gap: 4px;
 }
 
 .pf-card-btn.pf-fav-active {
@@ -535,7 +685,7 @@
   background: rgba(255, 123, 156, 0.14);
 }
 
-/* ---------- SillyTavern Extension Settings Panel ---------- */
+/* ---------- Settings Panel ---------- */
 .pf-settings-grid {
   display: flex;
   flex-direction: column;
@@ -556,10 +706,10 @@
   margin-bottom: 4px;
 }
 
-/* ---------- Keyframe Animations ---------- */
+/* ---------- Keyframes ---------- */
 @keyframes pf-breathe {
   0%, 100% { transform: translateY(0) scale(1); }
-  50% { transform: translateY(-3px) scale(1.02, 0.98); }
+  50% { transform: translateY(-2px) scale(1.02, 0.98); }
 }
 
 @keyframes pf-tail-wag {
@@ -573,25 +723,62 @@
   95% { transform: rotate(4deg); }
 }
 
+@keyframes pf-blink {
+  0%, 92%, 100% { transform: scaleY(1); }
+  95% { transform: scaleY(0.08); }
+}
+
+@keyframes pf-blush-pulse {
+  0%, 100% { opacity: 0.62; }
+  50% { opacity: 0.88; }
+}
+
 @keyframes pf-hop {
   0%, 100% { transform: translateY(0) scale(1); }
-  45% { transform: translateY(-14px) scale(1.06, 0.95); }
+  45% { transform: translateY(-9px) scale(1.06, 0.95); }
 }
 
 @keyframes pf-gnaw {
   0%, 100% { transform: translate(0, 0) rotate(0deg); }
-  25% { transform: translate(-2px, 2px) rotate(-5deg); }
-  75% { transform: translate(2px, 1px) rotate(5deg); }
+  25% { transform: translate(-1.5px, 1.5px) rotate(-5deg); }
+  75% { transform: translate(1.5px, 1px) rotate(5deg); }
 }
 
 @keyframes pf-poke {
   0%, 100% { transform: translateX(0); }
-  50% { transform: translateX(-9px) rotate(-6deg); }
+  50% { transform: translateX(-6px) rotate(-6deg); }
 }
 
 @keyframes pf-sleep {
-  0%, 100% { transform: translateY(2px) scale(1, 0.96); }
-  50% { transform: translateY(0px) scale(1.02, 0.99); }
+  0%, 100% { transform: translateY(1.5px) scale(1, 0.96); }
+  50% { transform: translateY(0) scale(1.02, 0.99); }
+}
+
+@keyframes pf-purr-sway {
+  0%, 100% { transform: translateY(0) rotate(-4deg) scale(1.04, 0.96); }
+  50% { transform: translateY(-2px) rotate(4deg) scale(0.98, 1.03); }
+}
+
+@keyframes pf-pout-wiggle {
+  0%, 100% { transform: scale(1); }
+  30% { transform: scale(1.08, 0.93) rotate(-4deg); }
+  65% { transform: scale(1.06, 0.95) rotate(4deg); }
+}
+
+@keyframes pf-float-heart {
+  0% { opacity: 0; transform: translate(0, 3px) scale(0.5); }
+  20% { opacity: 1; transform: translate(var(--hx, 0px), -8px) scale(1.1); }
+  100% { opacity: 0; transform: translate(calc(var(--hx, 0px) * 1.6), -36px) scale(0.8); }
+}
+
+@keyframes pf-wing-l {
+  0%, 100% { transform: rotate(0deg) scale(1); }
+  50% { transform: rotate(-10deg) scale(1.04, 0.96); }
+}
+
+@keyframes pf-wing-r {
+  0%, 100% { transform: rotate(0deg) scale(1); }
+  50% { transform: rotate(10deg) scale(1.04, 0.96); }
 }
 
 @keyframes pf-pop-in {
