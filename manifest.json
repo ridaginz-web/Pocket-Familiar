@@ -1,0 +1,14 @@
+{
+  "display_name": "Pocket Familiar",
+  "description": "Интерактивный тамагочи (лисёнок или зайчонок), который следит за чатом, ворчит на паузы и свайпы, спасает удалённые строчки и собирает любимые цитаты в скрапбук с открытками.",
+  "loading_order": 50,
+  "requires": [],
+  "optional": [],
+  "dependencies": [],
+  "js": "index.js",
+  "css": "style.css",
+  "author": "Pocket Familiar",
+  "version": "1.0.0",
+  "homePage": "https://docs.sillytavern.app/for-contributors/writing-extensions/",
+  "auto_update": false
+}
