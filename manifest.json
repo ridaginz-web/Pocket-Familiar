@@ -1,6 +1,6 @@
 {
   "display_name": "Pocket Familiar",
-  "description": "Компактный чиби-тамагочи (лисёнок, зайчонок, котёнок, дракончик, хомячок, акулёнок, шмелик и паучок): авто-скрываемая микро-панелька, поглаживания с сердечками, спасение свайпов и скрапбук цитат.",
+  "description": "Компактный чиби-тамагочи (лисёнок, зайчонок, котёнок, дракончик, хомячок, акулёнок, шмелик, паучок и совушка со скакалкой): поглаживания с сердечками, спасение свайпов и скрапбук цитат.",
   "loading_order": 50,
   "requires": [],
   "optional": [],
@@ -8,7 +8,7 @@
   "js": "index.js",
   "css": "style.css",
   "author": "Pocket Familiar",
-  "version": "1.3.1",
+  "version": "1.4.0",
   "homePage": "https://docs.sillytavern.app/for-contributors/writing-extensions/",
   "auto_update": false
 }
