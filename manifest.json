@@ -8,7 +8,7 @@
   "js": "index.js",
   "css": "style.css",
   "author": "Pocket Familiar",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "homePage": "https://docs.sillytavern.app/for-contributors/writing-extensions/",
   "auto_update": false
 }

@@ -1,5 +1,5 @@
 // ============================================================================
-// Pocket Familiar v1.4 — Ultra-Compact 9-Chibi Tamagotchi & Quote Collector
+// Pocket Familiar v1.5 — Auto-Screen Cross-Device 9-Chibi Tamagotchi
 // ============================================================================
 
 (function () {
@@ -1230,6 +1230,8 @@
     currentProp: '',
     bubbleTimer: null,
     barHideTimer: null,
+    isDragging: false,
+    screenWatchdog: null,
     animTimer: null,
     tapTimestamps: [],
     poutingUntil: 0,
@@ -1599,7 +1601,7 @@
   }
 
   // ---------- Runtime Cache-Proof CSS + Compact UI ----------
-  const RUNTIME_COMPACT_CSS = "/* ==========================================================================\n   Pocket Familiar v1.2 — Ultra-Compact Mobile Edition for SillyTavern\n   ========================================================================== */\n\n:root {\n  --pf-accent: #ff8c42;\n  --pf-accent-soft: rgba(255, 140, 66, 0.22);\n  --pf-bg-glass: rgba(20, 17, 26, 0.92);\n  --pf-card-bg: rgba(34, 28, 42, 0.96);\n  --pf-text: #f7efe6;\n  --pf-text-dim: #bbaea3;\n  --pf-border: rgba(255, 185, 130, 0.28);\n}\n\n#pf-widget[data-species=\"bunny\"] {\n  --pf-accent: #f48fb1;\n  --pf-accent-soft: rgba(244, 143, 177, 0.24);\n  --pf-border: rgba(244, 165, 193, 0.32);\n}\n\n#pf-widget[data-species=\"kitten\"] {\n  --pf-accent: #ffa8c5;\n  --pf-accent-soft: rgba(255, 168, 197, 0.24);\n  --pf-border: rgba(255, 188, 210, 0.32);\n}\n\n#pf-widget[data-species=\"dragon\"] {\n  --pf-accent: #b392ff;\n  --pf-accent-soft: rgba(179, 146, 255, 0.24);\n  --pf-border: rgba(196, 170, 255, 0.32);\n}\n\n#pf-widget[data-species=\"hamster\"] {\n  --pf-accent: #ffc266;\n  --pf-accent-soft: rgba(255, 194, 102, 0.24);\n  --pf-border: rgba(255, 210, 140, 0.32);\n}\n\n#pf-widget[data-species=\"shark\"] {\n  --pf-accent: #6ecbff;\n  --pf-accent-soft: rgba(110, 203, 255, 0.24);\n  --pf-border: rgba(145, 216, 255, 0.32);\n}\n\n#pf-widget[data-species=\"bee\"] {\n  --pf-accent: #ffd54f;\n  --pf-accent-soft: rgba(255, 213, 79, 0.24);\n  --pf-border: rgba(255, 224, 115, 0.36);\n}\n\n#pf-widget[data-species=\"spider\"] {\n  --pf-accent: #c9a7ff;\n  --pf-accent-soft: rgba(201, 167, 255, 0.24);\n  --pf-border: rgba(215, 190, 255, 0.36);\n}\n\n#pf-widget[data-species=\"owl\"] {\n  --pf-accent: #f3b37a;\n  --pf-accent-soft: rgba(243, 179, 122, 0.24);\n  --pf-border: rgba(247, 198, 150, 0.36);\n}\n\n/* ---------- Compact Floating Widget ---------- */\n#pf-widget {\n  --pf-size: 48px;\n  position: fixed;\n  right: 12px;\n  bottom: 108px;\n  z-index: 3100;\n  width: var(--pf-size);\n  height: var(--pf-size);\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  user-select: none;\n  -webkit-user-select: none;\n  font-family: inherit;\n  pointer-events: none;\n}\n\n#pf-widget.pf-hidden {\n  display: none !important;\n}\n\n#pf-widget * {\n  box-sizing: border-box;\n}\n\n/* ---------- Compact Speech Bubble ---------- */\n#pf-bubble {\n  position: absolute;\n  bottom: calc(100% + 7px);\n  right: 0;\n  width: max-content;\n  max-width: min(195px, 60vw);\n  padding: 6px 9px;\n  border-radius: 13px 13px 3px 13px;\n  background: var(--pf-bg-glass);\n  backdrop-filter: blur(10px);\n  -webkit-backdrop-filter: blur(10px);\n  border: 1px solid var(--pf-border);\n  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.48);\n  color: var(--pf-text);\n  font-size: 11.5px;\n  line-height: 1.36;\n  opacity: 0;\n  transform: translateY(6px) scale(0.94);\n  transition: opacity 0.2s ease, transform 0.2s cubic-bezier(0.22, 1, 0.36, 1);\n  pointer-events: none;\n  z-index: 3115;\n}\n\n#pf-bubble.pf-visible {\n  opacity: 1;\n  transform: translateY(0) scale(1);\n  pointer-events: auto;\n  cursor: pointer;\n}\n\n#pf-widget.pf-dock-left #pf-bubble {\n  right: auto;\n  left: 0;\n  border-radius: 13px 13px 13px 3px;\n}\n\n#pf-widget.pf-dock-top #pf-bubble {\n  bottom: auto;\n  top: calc(100% + 34px);\n  border-radius: 13px 3px 13px 13px;\n}\n\n#pf-widget.pf-dock-left.pf-dock-top #pf-bubble {\n  border-radius: 3px 13px 13px 13px;\n}\n\n.pf-bubble-speaker {\n  font-size: 9.5px;\n  font-weight: 700;\n  letter-spacing: 0.03em;\n  text-transform: uppercase;\n  color: var(--pf-accent);\n  margin-bottom: 2px;\n}\n\n.pf-bubble-text {\n  word-wrap: break-word;\n}\n\n.pf-bubble-quote {\n  margin-top: 4px;\n  padding: 3px 6px;\n  border-left: 2px solid var(--pf-accent);\n  background: rgba(255, 255, 255, 0.05);\n  border-radius: 0 6px 6px 0;\n  font-style: italic;\n  font-size: 10.5px;\n  color: var(--pf-text-dim);\n  display: -webkit-box;\n  -webkit-line-clamp: 2;\n  -webkit-box-orient: vertical;\n  overflow: hidden;\n}\n\n/* ---------- Familiar Stage & Chibi Sprite ---------- */\n#pf-stage {\n  pointer-events: auto;\n  position: relative;\n  width: var(--pf-size);\n  height: var(--pf-size);\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  cursor: grab;\n  touch-action: none;\n  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.42));\n}\n\n#pf-stage:active {\n  cursor: grabbing;\n}\n\n#pf-avatar-wrap {\n  width: 100%;\n  height: 100%;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  animation: pf-breathe 3.4s ease-in-out infinite;\n  transform-origin: bottom center;\n}\n\n#pf-avatar-wrap svg {\n  width: 100%;\n  height: 100%;\n  overflow: visible;\n}\n\n#pf-avatar-wrap img.pf-custom-sprite {\n  width: 100%;\n  height: 100%;\n  object-fit: contain;\n  pointer-events: none;\n}\n\n/* Tiny Corner Quote Badge (like ST floating badges) */\n#pf-corner-badge {\n  position: absolute;\n  bottom: -1px;\n  right: -2px;\n  min-width: 16px;\n  height: 16px;\n  padding: 0 4px;\n  border-radius: 999px;\n  background: rgba(24, 20, 30, 0.92);\n  border: 1px solid var(--pf-border);\n  color: var(--pf-accent);\n  font-size: 9.5px;\n  font-weight: 700;\n  line-height: 14px;\n  text-align: center;\n  pointer-events: none;\n  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.45);\n  transition: opacity 0.18s ease;\n}\n\n#pf-corner-badge.pf-zero,\n#pf-widget.pf-bar-open #pf-corner-badge,\n#pf-widget.pf-pin-bar #pf-corner-badge {\n  opacity: 0;\n}\n\n/* Prop Badge */\n#pf-prop-badge {\n  position: absolute;\n  top: -3px;\n  right: -3px;\n  font-size: 13px;\n  line-height: 1;\n  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.6));\n  pointer-events: none;\n  transition: transform 0.2s ease, opacity 0.2s ease;\n}\n\n#pf-prop-badge:empty {\n  opacity: 0;\n  transform: scale(0.5);\n}\n\n/* Chibi SVG animations */\n#pf-widget .pf-svg-tail {\n  transform-origin: 58px 56px;\n  animation: pf-tail-wag 2.8s ease-in-out infinite;\n}\n\n#pf-widget .pf-svg-ear-l {\n  transform-origin: 32px 26px;\n  animation: pf-ear-twitch 5s ease-in-out infinite;\n}\n\n#pf-widget .pf-svg-eyes-open {\n  transform-origin: 42px 43px;\n  animation: pf-blink 4.6s ease-in-out infinite;\n}\n\n#pf-widget .pf-svg-blush {\n  animation: pf-blush-pulse 3s ease-in-out infinite;\n}\n\n#pf-widget .pf-svg-wing-l {\n  transform-origin: 26px 46px;\n  animation: pf-wing-l 0.45s ease-in-out infinite;\n}\n\n#pf-widget .pf-svg-wing-r {\n  transform-origin: 58px 46px;\n  animation: pf-wing-r 0.45s ease-in-out infinite;\n}\n\n#pf-widget[data-anim=\"hop\"] #pf-avatar-wrap {\n  animation: pf-hop 0.52s cubic-bezier(0.34, 1.56, 0.64, 1) 2;\n}\n\n#pf-widget[data-anim=\"gnaw\"] #pf-avatar-wrap {\n  animation: pf-gnaw 0.35s ease-in-out infinite;\n}\n\n#pf-widget[data-anim=\"poke\"] #pf-avatar-wrap {\n  animation: pf-poke 0.7s ease-in-out infinite;\n}\n\n#pf-widget[data-anim=\"sleep\"] #pf-avatar-wrap {\n  animation: pf-sleep 4.2s ease-in-out infinite;\n}\n\n#pf-widget[data-anim=\"purr\"] #pf-avatar-wrap {\n  animation: pf-purr-sway 0.65s ease-in-out infinite;\n}\n\n#pf-widget[data-anim=\"pout\"] #pf-avatar-wrap {\n  animation: pf-pout-wiggle 0.55s ease-in-out 2;\n}\n\n/* ---------- Auto-Hiding Sleek Micro-Bar ---------- */\n#pf-mini-bar {\n  position: absolute !important;\n  top: calc(100% + 4px) !important;\n  right: 0 !important;\n  height: 26px !important;\n  width: max-content !important;\n  display: inline-flex !important;\n  flex-direction: row !important;\n  flex-wrap: nowrap !important;\n  align-items: center !important;\n  gap: 3px !important;\n  padding: 2px 6px !important;\n  border-radius: 999px !important;\n  background: var(--pf-bg-glass) !important;\n  border: 1px solid var(--pf-border) !important;\n  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.45) !important;\n  backdrop-filter: blur(8px) !important;\n  -webkit-backdrop-filter: blur(8px) !important;\n  opacity: 0;\n  transform: translateY(-4px) scale(0.92);\n  pointer-events: none;\n  transition: opacity 0.18s ease, transform 0.18s ease;\n  z-index: 3110;\n}\n\n#pf-widget.pf-dock-left #pf-mini-bar {\n  right: auto !important;\n  left: 0 !important;\n}\n\n#pf-widget.pf-bar-open #pf-mini-bar,\n#pf-widget.pf-pin-bar #pf-mini-bar {\n  opacity: 1;\n  transform: translateY(0) scale(1);\n  pointer-events: auto;\n}\n\n.pf-ico-btn {\n  display: inline-flex !important;\n  align-items: center !important;\n  justify-content: center !important;\n  gap: 2px !important;\n  height: 20px !important;\n  min-width: 20px !important;\n  padding: 0 4px !important;\n  margin: 0 !important;\n  border: none !important;\n  border-radius: 999px !important;\n  background: transparent !important;\n  color: var(--pf-text) !important;\n  font-size: 12px !important;\n  line-height: 1 !important;\n  cursor: pointer !important;\n  box-shadow: none !important;\n  transition: background 0.14s ease, transform 0.14s ease;\n}\n\n.pf-ico-btn:hover,\n.pf-ico-btn:active {\n  background: var(--pf-accent-soft) !important;\n  transform: scale(1.1);\n}\n\n#pf-count-badge {\n  font-size: 9.5px !important;\n  font-weight: 700 !important;\n  color: var(--pf-accent) !important;\n}\n\n.pf-hunger-track {\n  width: 22px !important;\n  height: 4px !important;\n  background: rgba(255, 255, 255, 0.14) !important;\n  border-radius: 999px !important;\n  overflow: hidden !important;\n  flex-shrink: 0 !important;\n}\n\n#pf-hunger-fill {\n  height: 100% !important;\n  width: 80%;\n  background: linear-gradient(90deg, #ff6b6b, var(--pf-accent), #7bed9f) !important;\n  border-radius: 999px !important;\n  transition: width 0.4s ease;\n}\n\n/* ---------- Compact 3x2 Species Grid Popover ---------- */\n#pf-species-menu {\n  position: absolute !important;\n  bottom: calc(100% + 6px) !important;\n  right: 0 !important;\n  display: none !important;\n  grid-template-columns: repeat(3, 28px) !important;\n  gap: 4px !important;\n  padding: 5px !important;\n  width: max-content !important;\n  height: auto !important;\n  border-radius: 12px !important;\n  background: var(--pf-bg-glass) !important;\n  border: 1px solid var(--pf-border) !important;\n  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.55) !important;\n  backdrop-filter: blur(10px) !important;\n  -webkit-backdrop-filter: blur(10px) !important;\n  z-index: 3125 !important;\n}\n\n#pf-widget.pf-dock-left #pf-species-menu {\n  right: auto !important;\n  left: 0 !important;\n}\n\n#pf-widget.pf-dock-top #pf-species-menu {\n  bottom: auto !important;\n  top: calc(100% + 34px) !important;\n}\n\n#pf-species-menu.pf-open {\n  display: grid !important;\n  pointer-events: auto !important;\n  animation: pf-pop-in 0.15s ease-out;\n}\n\n.pf-sp-option {\n  display: flex !important;\n  align-items: center !important;\n  justify-content: center !important;\n  width: 28px !important;\n  height: 28px !important;\n  min-height: 28px !important;\n  padding: 0 !important;\n  margin: 0 !important;\n  border-radius: 8px !important;\n  background: rgba(255, 255, 255, 0.05) !important;\n  border: 1px solid transparent !important;\n  font-size: 15px !important;\n  line-height: 1 !important;\n  cursor: pointer !important;\n  box-shadow: none !important;\n  transition: transform 0.14s ease, background 0.14s ease;\n}\n\n.pf-sp-option:hover,\n.pf-sp-option:active {\n  transform: scale(1.12);\n  background: var(--pf-accent-soft) !important;\n}\n\n.pf-sp-option.pf-current {\n  border-color: var(--pf-accent) !important;\n  background: var(--pf-accent-soft) !important;\n}\n\n/* ---------- Selection \"Feed Quote\" Pill ---------- */\n#pf-feed-btn {\n  position: fixed;\n  z-index: 3300;\n  display: none;\n  align-items: center;\n  gap: 5px;\n  padding: 5px 11px;\n  border-radius: 999px;\n  background: rgba(28, 22, 36, 0.95);\n  color: #fff6ee;\n  border: 1px solid var(--pf-accent);\n  box-shadow: 0 5px 16px rgba(0, 0, 0, 0.55);\n  font-size: 12px;\n  font-weight: 600;\n  cursor: pointer;\n  user-select: none;\n  -webkit-user-select: none;\n  animation: pf-pop-in 0.16s ease-out;\n}\n\n/* ---------- Particles ---------- */\n.pf-flying-quote {\n  position: fixed;\n  z-index: 3250;\n  pointer-events: none;\n  padding: 4px 9px;\n  max-width: 170px;\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  border-radius: 10px;\n  background: rgba(255, 243, 224, 0.95);\n  color: #2c1e18;\n  font-size: 11px;\n  font-style: italic;\n  font-weight: 600;\n  box-shadow: 0 5px 14px rgba(0, 0, 0, 0.35);\n  transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.7s ease;\n}\n\n.pf-heart-particle {\n  position: fixed;\n  z-index: 3260;\n  pointer-events: none;\n  font-size: 13px;\n  filter: drop-shadow(0 2px 5px rgba(255, 105, 160, 0.45));\n  animation: pf-float-heart 1.1s cubic-bezier(0.22, 1, 0.36, 1) forwards;\n}\n\n/* ---------- Cozy Scrapbook Modal (Scrollable & Mobile-Safe) ---------- */\n#pf-modal-backdrop {\n  position: fixed !important;\n  inset: 0 !important;\n  width: 100vw !important;\n  height: 100vh !important;\n  height: 100dvh !important;\n  z-index: 2147483000 !important;\n  background: rgba(10, 8, 14, 0.78) !important;\n  backdrop-filter: blur(7px) !important;\n  -webkit-backdrop-filter: blur(7px) !important;\n  display: none !important;\n  align-items: center !important;\n  justify-content: center !important;\n  padding: max(12px, env(safe-area-inset-top)) 10px max(12px, env(safe-area-inset-bottom)) !important;\n  box-sizing: border-box !important;\n}\n\n#pf-modal-backdrop.pf-open {\n  display: flex !important;\n}\n\n#pf-modal {\n  width: min(650px, 95vw) !important;\n  height: auto !important;\n  max-height: 84vh !important;\n  max-height: 84dvh !important;\n  background: #1b1622 !important;\n  border: 1px solid rgba(255, 195, 150, 0.28) !important;\n  border-radius: 18px !important;\n  box-shadow: 0 20px 55px rgba(0, 0, 0, 0.78) !important;\n  color: #f7efe6 !important;\n  display: flex !important;\n  flex-direction: column !important;\n  overflow: hidden !important;\n  animation: pf-pop-in 0.18s ease-out;\n}\n\n.pf-modal-header {\n  flex: 0 0 auto !important;\n  padding: 12px 15px !important;\n  background: rgba(255, 255, 255, 0.03) !important;\n  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;\n  display: flex !important;\n  align-items: center !important;\n  justify-content: space-between !important;\n  gap: 10px !important;\n}\n\n.pf-modal-title {\n  font-size: 15px !important;\n  font-weight: 700 !important;\n  display: flex !important;\n  align-items: center !important;\n  gap: 7px !important;\n}\n\n.pf-modal-close {\n  flex: 0 0 auto !important;\n  display: inline-flex !important;\n  align-items: center !important;\n  justify-content: center !important;\n  background: rgba(255, 255, 255, 0.08) !important;\n  border: none !important;\n  color: #f7efe6 !important;\n  width: 30px !important;\n  height: 30px !important;\n  min-height: 30px !important;\n  padding: 0 !important;\n  margin: 0 !important;\n  border-radius: 50% !important;\n  font-size: 14px !important;\n  cursor: pointer !important;\n}\n\n.pf-modal-toolbar {\n  flex: 0 0 auto !important;\n  padding: 8px 14px !important;\n  display: flex !important;\n  flex-wrap: wrap !important;\n  gap: 6px !important;\n  align-items: center !important;\n  border-bottom: 1px solid rgba(255, 255, 255, 0.06) !important;\n}\n\n.pf-chip {\n  background: rgba(255, 255, 255, 0.06) !important;\n  border: 1px solid rgba(255, 255, 255, 0.12) !important;\n  color: #d9cec3 !important;\n  padding: 4px 10px !important;\n  min-height: 0 !important;\n  height: auto !important;\n  margin: 0 !important;\n  border-radius: 999px !important;\n  font-size: 11.5px !important;\n  line-height: 1.3 !important;\n  cursor: pointer !important;\n}\n\n.pf-chip.pf-active {\n  background: rgba(255, 140, 66, 0.24) !important;\n  border-color: #ff8c42 !important;\n  color: #fff !important;\n  font-weight: 600 !important;\n}\n\n#pf-search-input {\n  flex: 1 1 140px !important;\n  min-width: 120px !important;\n  height: 30px !important;\n  background: rgba(0, 0, 0, 0.32) !important;\n  border: 1px solid rgba(255, 255, 255, 0.14) !important;\n  color: #f7efe6 !important;\n  border-radius: 999px !important;\n  padding: 4px 12px !important;\n  font-size: 12px !important;\n}\n\n#pf-quotes-list {\n  display: block !important;\n  flex: 1 1 auto !important;\n  min-height: 0 !important;\n  padding: 12px 14px 26px !important;\n  overflow-y: auto !important;\n  overflow-x: hidden !important;\n  -webkit-overflow-scrolling: touch !important;\n  overscroll-behavior: contain !important;\n  touch-action: pan-y !important;\n}\n\n#pf-quotes-list::-webkit-scrollbar {\n  width: 5px;\n}\n\n#pf-quotes-list::-webkit-scrollbar-track {\n  background: rgba(255, 255, 255, 0.03);\n  border-radius: 999px;\n}\n\n#pf-quotes-list::-webkit-scrollbar-thumb {\n  background: rgba(255, 195, 150, 0.32);\n  border-radius: 999px;\n}\n\n.pf-empty-state {\n  text-align: center;\n  padding: 30px 14px;\n  color: #a99b90;\n  font-size: 13px;\n}\n\n.pf-quote-card {\n  position: relative !important;\n  display: block !important;\n  height: auto !important;\n  flex-shrink: 0 !important;\n  background: linear-gradient(145deg, #272030, #201a28) !important;\n  border: 1px solid rgba(255, 200, 160, 0.18) !important;\n  border-radius: 13px !important;\n  padding: 12px 13px 11px !important;\n  margin: 0 0 11px 0 !important;\n  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.26) !important;\n  overflow: visible !important;\n}\n\n.pf-quote-card:last-child {\n  margin-bottom: 2px !important;\n}\n\n.pf-card-top {\n  display: flex !important;\n  align-items: center !important;\n  justify-content: space-between !important;\n  gap: 6px !important;\n  margin-bottom: 7px !important;\n  flex-wrap: wrap !important;\n}\n\n.pf-sticker {\n  display: inline-block !important;\n  padding: 2px 8px !important;\n  border-radius: 6px !important;\n  background: rgba(255, 150, 90, 0.18) !important;\n  border: 1px dashed rgba(255, 168, 115, 0.5) !important;\n  color: #ffc299 !important;\n  font-size: 10.5px !important;\n  font-weight: 700 !important;\n  transform: rotate(-1deg);\n}\n\n.pf-card-meta {\n  font-size: 11px !important;\n  color: #b0a296 !important;\n}\n\n.pf-card-text {\n  display: block !important;\n  font-size: 13px !important;\n  line-height: 1.5 !important;\n  color: #fbf4ec !important;\n  margin: 6px 0 10px !important;\n  white-space: pre-wrap !important;\n  word-break: break-word !important;\n  overflow: visible !important;\n}\n\n.pf-card-actions {\n  display: flex !important;\n  align-items: center !important;\n  gap: 6px !important;\n  flex-wrap: wrap !important;\n  margin-top: 4px !important;\n}\n\n.pf-card-btn {\n  background: rgba(255, 255, 255, 0.07) !important;\n  border: 1px solid rgba(255, 255, 255, 0.12) !important;\n  color: #eee3d8 !important;\n  border-radius: 8px !important;\n  padding: 5px 9px !important;\n  min-height: 0 !important;\n  height: auto !important;\n  margin: 0 !important;\n  font-size: 11.5px !important;\n  line-height: 1.2 !important;\n  cursor: pointer !important;\n  display: inline-flex !important;\n  align-items: center !important;\n  gap: 4px !important;\n  box-shadow: none !important;\n}\n\n.pf-card-btn.pf-fav-active {\n  color: #ff7b9c !important;\n  border-color: rgba(255, 123, 156, 0.48) !important;\n  background: rgba(255, 123, 156, 0.16) !important;\n}\n\n/* ---------- Settings Panel ---------- */\n.pf-settings-grid {\n  display: flex;\n  flex-direction: column;\n  gap: 8px;\n  padding: 6px 2px;\n}\n\n.pf-settings-row {\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  gap: 10px;\n}\n\n.pf-settings-sub {\n  font-size: 11.5px;\n  opacity: 0.75;\n  margin-bottom: 4px;\n}\n\n/* ---------- Keyframes ---------- */\n@keyframes pf-breathe {\n  0%, 100% { transform: translateY(0) scale(1); }\n  50% { transform: translateY(-2px) scale(1.02, 0.98); }\n}\n\n@keyframes pf-tail-wag {\n  0%, 100% { transform: rotate(0deg); }\n  50% { transform: rotate(10deg); }\n}\n\n@keyframes pf-ear-twitch {\n  0%, 86%, 100% { transform: rotate(0deg); }\n  90% { transform: rotate(-9deg); }\n  95% { transform: rotate(4deg); }\n}\n\n@keyframes pf-blink {\n  0%, 92%, 100% { transform: scaleY(1); }\n  95% { transform: scaleY(0.08); }\n}\n\n@keyframes pf-blush-pulse {\n  0%, 100% { opacity: 0.62; }\n  50% { opacity: 0.88; }\n}\n\n@keyframes pf-hop {\n  0%, 100% { transform: translateY(0) scale(1); }\n  45% { transform: translateY(-9px) scale(1.06, 0.95); }\n}\n\n@keyframes pf-gnaw {\n  0%, 100% { transform: translate(0, 0) rotate(0deg); }\n  25% { transform: translate(-1.5px, 1.5px) rotate(-5deg); }\n  75% { transform: translate(1.5px, 1px) rotate(5deg); }\n}\n\n@keyframes pf-poke {\n  0%, 100% { transform: translateX(0); }\n  50% { transform: translateX(-6px) rotate(-6deg); }\n}\n\n@keyframes pf-sleep {\n  0%, 100% { transform: translateY(1.5px) scale(1, 0.96); }\n  50% { transform: translateY(0) scale(1.02, 0.99); }\n}\n\n@keyframes pf-purr-sway {\n  0%, 100% { transform: translateY(0) rotate(-4deg) scale(1.04, 0.96); }\n  50% { transform: translateY(-2px) rotate(4deg) scale(0.98, 1.03); }\n}\n\n@keyframes pf-pout-wiggle {\n  0%, 100% { transform: scale(1); }\n  30% { transform: scale(1.08, 0.93) rotate(-4deg); }\n  65% { transform: scale(1.06, 0.95) rotate(4deg); }\n}\n\n@keyframes pf-float-heart {\n  0% { opacity: 0; transform: translate(0, 3px) scale(0.5); }\n  20% { opacity: 1; transform: translate(var(--hx, 0px), -8px) scale(1.1); }\n  100% { opacity: 0; transform: translate(calc(var(--hx, 0px) * 1.6), -36px) scale(0.8); }\n}\n\n@keyframes pf-wing-l {\n  0%, 100% { transform: rotate(0deg) scale(1); }\n  50% { transform: rotate(-10deg) scale(1.04, 0.96); }\n}\n\n@keyframes pf-wing-r {\n  0%, 100% { transform: rotate(0deg) scale(1); }\n  50% { transform: rotate(10deg) scale(1.04, 0.96); }\n}\n\n@keyframes pf-pop-in {\n  from { opacity: 0; transform: scale(0.92); }\n  to { opacity: 1; transform: scale(1); }\n}\n\n/* Owlet Jump-Rope Idle Animation */\n#pf-widget[data-species=\"owl\"]:not([data-anim]) #pf-avatar-wrap {\n  animation: none;\n}\n\n#pf-widget .pf-owl-jumping .pf-owl-body {\n  transform-origin: 42px 68px;\n  animation: pf-owl-jump 0.92s infinite;\n}\n\n#pf-widget .pf-owl-jumping .pf-owl-shadow {\n  transform-origin: 42px 76px;\n  animation: pf-owl-shadow-pulse 0.92s infinite;\n}\n\n#pf-widget .pf-owl-jumping .pf-rope-front {\n  transform-origin: 42px 52px;\n  animation: pf-rope-spin-front 0.92s linear infinite;\n}\n\n#pf-widget .pf-owl-jumping .pf-rope-back {\n  transform-origin: 42px 52px;\n  animation: pf-rope-spin-back 0.92s linear infinite;\n}\n\n@keyframes pf-owl-jump {\n  0%, 14% { transform: translateY(0) scale(1, 1); }\n  24% { transform: translateY(2px) scale(1.04, 0.95); }\n  48% { transform: translateY(-9.5px) scale(0.97, 1.04); }\n  74% { transform: translateY(1.5px) scale(1.03, 0.96); }\n  88%, 100% { transform: translateY(0) scale(1, 1); }\n}\n\n@keyframes pf-owl-shadow-pulse {\n  0%, 24%, 76%, 100% { transform: scaleX(1); opacity: 0.32; }\n  48% { transform: scaleX(0.62); opacity: 0.14; }\n}\n\n@keyframes pf-rope-spin-front {\n  0% { transform: scaleY(1); opacity: 1; }\n  25% { transform: scaleY(0.12); opacity: 1; }\n  49.9% { transform: scaleY(-0.68); opacity: 1; }\n  50%, 99.9% { transform: scaleY(-0.68); opacity: 0; }\n  100% { transform: scaleY(1); opacity: 1; }\n}\n\n@keyframes pf-rope-spin-back {\n  0%, 49.9% { transform: scaleY(-0.68); opacity: 0; }\n  50% { transform: scaleY(-0.68); opacity: 1; }\n  75% { transform: scaleY(0.12); opacity: 1; }\n  99.9% { transform: scaleY(1); opacity: 1; }\n  100% { transform: scaleY(1); opacity: 0; }\n}\n";
+  const RUNTIME_COMPACT_CSS = "/* ==========================================================================\n   Pocket Familiar v1.2 — Ultra-Compact Mobile Edition for SillyTavern\n   ========================================================================== */\n\n:root {\n  --pf-accent: #ff8c42;\n  --pf-accent-soft: rgba(255, 140, 66, 0.22);\n  --pf-bg-glass: rgba(20, 17, 26, 0.92);\n  --pf-card-bg: rgba(34, 28, 42, 0.96);\n  --pf-text: #f7efe6;\n  --pf-text-dim: #bbaea3;\n  --pf-border: rgba(255, 185, 130, 0.28);\n}\n\n#pf-widget[data-species=\"bunny\"] {\n  --pf-accent: #f48fb1;\n  --pf-accent-soft: rgba(244, 143, 177, 0.24);\n  --pf-border: rgba(244, 165, 193, 0.32);\n}\n\n#pf-widget[data-species=\"kitten\"] {\n  --pf-accent: #ffa8c5;\n  --pf-accent-soft: rgba(255, 168, 197, 0.24);\n  --pf-border: rgba(255, 188, 210, 0.32);\n}\n\n#pf-widget[data-species=\"dragon\"] {\n  --pf-accent: #b392ff;\n  --pf-accent-soft: rgba(179, 146, 255, 0.24);\n  --pf-border: rgba(196, 170, 255, 0.32);\n}\n\n#pf-widget[data-species=\"hamster\"] {\n  --pf-accent: #ffc266;\n  --pf-accent-soft: rgba(255, 194, 102, 0.24);\n  --pf-border: rgba(255, 210, 140, 0.32);\n}\n\n#pf-widget[data-species=\"shark\"] {\n  --pf-accent: #6ecbff;\n  --pf-accent-soft: rgba(110, 203, 255, 0.24);\n  --pf-border: rgba(145, 216, 255, 0.32);\n}\n\n#pf-widget[data-species=\"bee\"] {\n  --pf-accent: #ffd54f;\n  --pf-accent-soft: rgba(255, 213, 79, 0.24);\n  --pf-border: rgba(255, 224, 115, 0.36);\n}\n\n#pf-widget[data-species=\"spider\"] {\n  --pf-accent: #c9a7ff;\n  --pf-accent-soft: rgba(201, 167, 255, 0.24);\n  --pf-border: rgba(215, 190, 255, 0.36);\n}\n\n#pf-widget[data-species=\"owl\"] {\n  --pf-accent: #f3b37a;\n  --pf-accent-soft: rgba(243, 179, 122, 0.24);\n  --pf-border: rgba(247, 198, 150, 0.36);\n}\n\n/* ---------- Compact Floating Widget ---------- */\n#pf-widget {\n  --pf-size: 48px;\n  position: fixed !important;\n  left: 12px;\n  top: 120px;\n  right: auto !important;\n  bottom: auto !important;\n  margin: 0 !important;\n  transform: none !important;\n  z-index: 9990 !important;\n  width: var(--pf-size);\n  height: var(--pf-size);\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  user-select: none;\n  -webkit-user-select: none;\n  font-family: inherit;\n  pointer-events: none;\n}\n\n#pf-widget.pf-hidden {\n  display: none !important;\n}\n\n#pf-widget * {\n  box-sizing: border-box;\n}\n\n/* ---------- Compact Speech Bubble ---------- */\n#pf-bubble {\n  position: absolute;\n  bottom: calc(100% + 7px);\n  right: 0;\n  width: max-content;\n  max-width: min(200px, calc(100vw - 24px));\n  padding: 6px 9px;\n  border-radius: 13px 13px 3px 13px;\n  background: var(--pf-bg-glass);\n  backdrop-filter: blur(10px);\n  -webkit-backdrop-filter: blur(10px);\n  border: 1px solid var(--pf-border);\n  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.48);\n  color: var(--pf-text);\n  font-size: 11.5px;\n  line-height: 1.36;\n  opacity: 0;\n  transform: translateY(6px) scale(0.94);\n  transition: opacity 0.2s ease, transform 0.2s cubic-bezier(0.22, 1, 0.36, 1);\n  pointer-events: none;\n  z-index: 3115;\n}\n\n#pf-bubble.pf-visible {\n  opacity: 1;\n  transform: translate(var(--pf-bub-dx, 0px), var(--pf-bub-dy, 0px)) scale(1);\n  pointer-events: auto;\n  cursor: pointer;\n}\n\n#pf-widget.pf-dock-left #pf-bubble {\n  right: auto;\n  left: 0;\n  border-radius: 13px 13px 13px 3px;\n}\n\n#pf-widget.pf-dock-top #pf-bubble {\n  bottom: auto;\n  top: calc(100% + 34px);\n  border-radius: 13px 3px 13px 13px;\n}\n\n#pf-widget.pf-dock-left.pf-dock-top #pf-bubble {\n  border-radius: 3px 13px 13px 13px;\n}\n\n.pf-bubble-speaker {\n  font-size: 9.5px;\n  font-weight: 700;\n  letter-spacing: 0.03em;\n  text-transform: uppercase;\n  color: var(--pf-accent);\n  margin-bottom: 2px;\n}\n\n.pf-bubble-text {\n  word-wrap: break-word;\n}\n\n.pf-bubble-quote {\n  margin-top: 4px;\n  padding: 3px 6px;\n  border-left: 2px solid var(--pf-accent);\n  background: rgba(255, 255, 255, 0.05);\n  border-radius: 0 6px 6px 0;\n  font-style: italic;\n  font-size: 10.5px;\n  color: var(--pf-text-dim);\n  display: -webkit-box;\n  -webkit-line-clamp: 2;\n  -webkit-box-orient: vertical;\n  overflow: hidden;\n}\n\n/* ---------- Familiar Stage & Chibi Sprite ---------- */\n#pf-stage {\n  pointer-events: auto;\n  position: relative;\n  width: var(--pf-size);\n  height: var(--pf-size);\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  cursor: grab;\n  touch-action: none;\n  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.42));\n}\n\n#pf-stage:active {\n  cursor: grabbing;\n}\n\n#pf-avatar-wrap {\n  width: 100%;\n  height: 100%;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  animation: pf-breathe 3.4s ease-in-out infinite;\n  transform-origin: bottom center;\n}\n\n#pf-avatar-wrap svg {\n  width: 100%;\n  height: 100%;\n  overflow: visible;\n}\n\n#pf-avatar-wrap img.pf-custom-sprite {\n  width: 100%;\n  height: 100%;\n  object-fit: contain;\n  pointer-events: none;\n}\n\n/* Tiny Corner Quote Badge (like ST floating badges) */\n#pf-corner-badge {\n  position: absolute;\n  bottom: -1px;\n  right: -2px;\n  min-width: 16px;\n  height: 16px;\n  padding: 0 4px;\n  border-radius: 999px;\n  background: rgba(24, 20, 30, 0.92);\n  border: 1px solid var(--pf-border);\n  color: var(--pf-accent);\n  font-size: 9.5px;\n  font-weight: 700;\n  line-height: 14px;\n  text-align: center;\n  pointer-events: none;\n  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.45);\n  transition: opacity 0.18s ease;\n}\n\n#pf-corner-badge.pf-zero,\n#pf-widget.pf-bar-open #pf-corner-badge,\n#pf-widget.pf-pin-bar #pf-corner-badge {\n  opacity: 0;\n}\n\n/* Prop Badge */\n#pf-prop-badge {\n  position: absolute;\n  top: -3px;\n  right: -3px;\n  font-size: 13px;\n  line-height: 1;\n  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.6));\n  pointer-events: none;\n  transition: transform 0.2s ease, opacity 0.2s ease;\n}\n\n#pf-prop-badge:empty {\n  opacity: 0;\n  transform: scale(0.5);\n}\n\n/* Chibi SVG animations */\n#pf-widget .pf-svg-tail {\n  transform-origin: 58px 56px;\n  animation: pf-tail-wag 2.8s ease-in-out infinite;\n}\n\n#pf-widget .pf-svg-ear-l {\n  transform-origin: 32px 26px;\n  animation: pf-ear-twitch 5s ease-in-out infinite;\n}\n\n#pf-widget .pf-svg-eyes-open {\n  transform-origin: 42px 43px;\n  animation: pf-blink 4.6s ease-in-out infinite;\n}\n\n#pf-widget .pf-svg-blush {\n  animation: pf-blush-pulse 3s ease-in-out infinite;\n}\n\n#pf-widget .pf-svg-wing-l {\n  transform-origin: 26px 46px;\n  animation: pf-wing-l 0.45s ease-in-out infinite;\n}\n\n#pf-widget .pf-svg-wing-r {\n  transform-origin: 58px 46px;\n  animation: pf-wing-r 0.45s ease-in-out infinite;\n}\n\n#pf-widget[data-anim=\"hop\"] #pf-avatar-wrap {\n  animation: pf-hop 0.52s cubic-bezier(0.34, 1.56, 0.64, 1) 2;\n}\n\n#pf-widget[data-anim=\"gnaw\"] #pf-avatar-wrap {\n  animation: pf-gnaw 0.35s ease-in-out infinite;\n}\n\n#pf-widget[data-anim=\"poke\"] #pf-avatar-wrap {\n  animation: pf-poke 0.7s ease-in-out infinite;\n}\n\n#pf-widget[data-anim=\"sleep\"] #pf-avatar-wrap {\n  animation: pf-sleep 4.2s ease-in-out infinite;\n}\n\n#pf-widget[data-anim=\"purr\"] #pf-avatar-wrap {\n  animation: pf-purr-sway 0.65s ease-in-out infinite;\n}\n\n#pf-widget[data-anim=\"pout\"] #pf-avatar-wrap {\n  animation: pf-pout-wiggle 0.55s ease-in-out 2;\n}\n\n/* ---------- Auto-Hiding Sleek Micro-Bar ---------- */\n#pf-mini-bar {\n  position: absolute !important;\n  top: calc(100% + 4px) !important;\n  right: 0 !important;\n  height: 26px !important;\n  width: max-content !important;\n  display: inline-flex !important;\n  flex-direction: row !important;\n  flex-wrap: nowrap !important;\n  align-items: center !important;\n  gap: 3px !important;\n  padding: 2px 6px !important;\n  border-radius: 999px !important;\n  background: var(--pf-bg-glass) !important;\n  border: 1px solid var(--pf-border) !important;\n  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.45) !important;\n  backdrop-filter: blur(8px) !important;\n  -webkit-backdrop-filter: blur(8px) !important;\n  opacity: 0;\n  transform: translateY(-4px) scale(0.92);\n  pointer-events: none;\n  transition: opacity 0.18s ease, transform 0.18s ease;\n  z-index: 3110;\n}\n\n#pf-widget.pf-dock-left #pf-mini-bar {\n  right: auto !important;\n  left: 0 !important;\n}\n\n#pf-widget.pf-bar-open #pf-mini-bar,\n#pf-widget.pf-pin-bar #pf-mini-bar {\n  opacity: 1;\n  transform: translateY(0) scale(1);\n  pointer-events: auto;\n}\n\n.pf-ico-btn {\n  display: inline-flex !important;\n  align-items: center !important;\n  justify-content: center !important;\n  gap: 2px !important;\n  height: 20px !important;\n  min-width: 20px !important;\n  padding: 0 4px !important;\n  margin: 0 !important;\n  border: none !important;\n  border-radius: 999px !important;\n  background: transparent !important;\n  color: var(--pf-text) !important;\n  font-size: 12px !important;\n  line-height: 1 !important;\n  cursor: pointer !important;\n  box-shadow: none !important;\n  transition: background 0.14s ease, transform 0.14s ease;\n}\n\n.pf-ico-btn:hover,\n.pf-ico-btn:active {\n  background: var(--pf-accent-soft) !important;\n  transform: scale(1.1);\n}\n\n#pf-count-badge {\n  font-size: 9.5px !important;\n  font-weight: 700 !important;\n  color: var(--pf-accent) !important;\n}\n\n.pf-hunger-track {\n  width: 22px !important;\n  height: 4px !important;\n  background: rgba(255, 255, 255, 0.14) !important;\n  border-radius: 999px !important;\n  overflow: hidden !important;\n  flex-shrink: 0 !important;\n}\n\n#pf-hunger-fill {\n  height: 100% !important;\n  width: 80%;\n  background: linear-gradient(90deg, #ff6b6b, var(--pf-accent), #7bed9f) !important;\n  border-radius: 999px !important;\n  transition: width 0.4s ease;\n}\n\n/* ---------- Compact 3x2 Species Grid Popover ---------- */\n#pf-species-menu {\n  position: absolute !important;\n  bottom: calc(100% + 6px) !important;\n  right: 0 !important;\n  display: none !important;\n  grid-template-columns: repeat(3, 28px) !important;\n  gap: 4px !important;\n  padding: 5px !important;\n  width: max-content !important;\n  height: auto !important;\n  border-radius: 12px !important;\n  background: var(--pf-bg-glass) !important;\n  border: 1px solid var(--pf-border) !important;\n  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.55) !important;\n  backdrop-filter: blur(10px) !important;\n  -webkit-backdrop-filter: blur(10px) !important;\n  z-index: 3125 !important;\n}\n\n#pf-widget.pf-dock-left #pf-species-menu {\n  right: auto !important;\n  left: 0 !important;\n}\n\n#pf-widget.pf-dock-top #pf-species-menu {\n  bottom: auto !important;\n  top: calc(100% + 34px) !important;\n}\n\n#pf-species-menu.pf-open {\n  display: grid !important;\n  pointer-events: auto !important;\n  animation: pf-pop-in 0.15s ease-out;\n}\n\n.pf-sp-option {\n  display: flex !important;\n  align-items: center !important;\n  justify-content: center !important;\n  width: 28px !important;\n  height: 28px !important;\n  min-height: 28px !important;\n  padding: 0 !important;\n  margin: 0 !important;\n  border-radius: 8px !important;\n  background: rgba(255, 255, 255, 0.05) !important;\n  border: 1px solid transparent !important;\n  font-size: 15px !important;\n  line-height: 1 !important;\n  cursor: pointer !important;\n  box-shadow: none !important;\n  transition: transform 0.14s ease, background 0.14s ease;\n}\n\n.pf-sp-option:hover,\n.pf-sp-option:active {\n  transform: scale(1.12);\n  background: var(--pf-accent-soft) !important;\n}\n\n.pf-sp-option.pf-current {\n  border-color: var(--pf-accent) !important;\n  background: var(--pf-accent-soft) !important;\n}\n\n/* ---------- Selection \"Feed Quote\" Pill ---------- */\n#pf-feed-btn {\n  position: fixed;\n  z-index: 3300;\n  display: none;\n  align-items: center;\n  gap: 5px;\n  padding: 5px 11px;\n  border-radius: 999px;\n  background: rgba(28, 22, 36, 0.95);\n  color: #fff6ee;\n  border: 1px solid var(--pf-accent);\n  box-shadow: 0 5px 16px rgba(0, 0, 0, 0.55);\n  font-size: 12px;\n  font-weight: 600;\n  cursor: pointer;\n  user-select: none;\n  -webkit-user-select: none;\n  animation: pf-pop-in 0.16s ease-out;\n}\n\n/* ---------- Particles ---------- */\n.pf-flying-quote {\n  position: fixed;\n  z-index: 3250;\n  pointer-events: none;\n  padding: 4px 9px;\n  max-width: 170px;\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  border-radius: 10px;\n  background: rgba(255, 243, 224, 0.95);\n  color: #2c1e18;\n  font-size: 11px;\n  font-style: italic;\n  font-weight: 600;\n  box-shadow: 0 5px 14px rgba(0, 0, 0, 0.35);\n  transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.7s ease;\n}\n\n.pf-heart-particle {\n  position: fixed;\n  z-index: 3260;\n  pointer-events: none;\n  font-size: 13px;\n  filter: drop-shadow(0 2px 5px rgba(255, 105, 160, 0.45));\n  animation: pf-float-heart 1.1s cubic-bezier(0.22, 1, 0.36, 1) forwards;\n}\n\n/* ---------- Cozy Scrapbook Modal (Scrollable & Mobile-Safe) ---------- */\n#pf-modal-backdrop {\n  position: fixed !important;\n  inset: 0 !important;\n  width: 100vw !important;\n  height: 100vh !important;\n  height: 100dvh !important;\n  z-index: 2147483000 !important;\n  background: rgba(10, 8, 14, 0.78) !important;\n  backdrop-filter: blur(7px) !important;\n  -webkit-backdrop-filter: blur(7px) !important;\n  display: none !important;\n  align-items: center !important;\n  justify-content: center !important;\n  padding: max(12px, env(safe-area-inset-top)) 10px max(12px, env(safe-area-inset-bottom)) !important;\n  box-sizing: border-box !important;\n}\n\n#pf-modal-backdrop.pf-open {\n  display: flex !important;\n}\n\n#pf-modal {\n  width: min(650px, 95vw) !important;\n  height: auto !important;\n  max-height: 84vh !important;\n  max-height: 84dvh !important;\n  background: #1b1622 !important;\n  border: 1px solid rgba(255, 195, 150, 0.28) !important;\n  border-radius: 18px !important;\n  box-shadow: 0 20px 55px rgba(0, 0, 0, 0.78) !important;\n  color: #f7efe6 !important;\n  display: flex !important;\n  flex-direction: column !important;\n  overflow: hidden !important;\n  animation: pf-pop-in 0.18s ease-out;\n}\n\n.pf-modal-header {\n  flex: 0 0 auto !important;\n  padding: 12px 15px !important;\n  background: rgba(255, 255, 255, 0.03) !important;\n  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;\n  display: flex !important;\n  align-items: center !important;\n  justify-content: space-between !important;\n  gap: 10px !important;\n}\n\n.pf-modal-title {\n  font-size: 15px !important;\n  font-weight: 700 !important;\n  display: flex !important;\n  align-items: center !important;\n  gap: 7px !important;\n}\n\n.pf-modal-close {\n  flex: 0 0 auto !important;\n  display: inline-flex !important;\n  align-items: center !important;\n  justify-content: center !important;\n  background: rgba(255, 255, 255, 0.08) !important;\n  border: none !important;\n  color: #f7efe6 !important;\n  width: 30px !important;\n  height: 30px !important;\n  min-height: 30px !important;\n  padding: 0 !important;\n  margin: 0 !important;\n  border-radius: 50% !important;\n  font-size: 14px !important;\n  cursor: pointer !important;\n}\n\n.pf-modal-toolbar {\n  flex: 0 0 auto !important;\n  padding: 8px 14px !important;\n  display: flex !important;\n  flex-wrap: wrap !important;\n  gap: 6px !important;\n  align-items: center !important;\n  border-bottom: 1px solid rgba(255, 255, 255, 0.06) !important;\n}\n\n.pf-chip {\n  background: rgba(255, 255, 255, 0.06) !important;\n  border: 1px solid rgba(255, 255, 255, 0.12) !important;\n  color: #d9cec3 !important;\n  padding: 4px 10px !important;\n  min-height: 0 !important;\n  height: auto !important;\n  margin: 0 !important;\n  border-radius: 999px !important;\n  font-size: 11.5px !important;\n  line-height: 1.3 !important;\n  cursor: pointer !important;\n}\n\n.pf-chip.pf-active {\n  background: rgba(255, 140, 66, 0.24) !important;\n  border-color: #ff8c42 !important;\n  color: #fff !important;\n  font-weight: 600 !important;\n}\n\n#pf-search-input {\n  flex: 1 1 140px !important;\n  min-width: 120px !important;\n  height: 30px !important;\n  background: rgba(0, 0, 0, 0.32) !important;\n  border: 1px solid rgba(255, 255, 255, 0.14) !important;\n  color: #f7efe6 !important;\n  border-radius: 999px !important;\n  padding: 4px 12px !important;\n  font-size: 12px !important;\n}\n\n#pf-quotes-list {\n  display: block !important;\n  flex: 1 1 auto !important;\n  min-height: 0 !important;\n  padding: 12px 14px 26px !important;\n  overflow-y: auto !important;\n  overflow-x: hidden !important;\n  -webkit-overflow-scrolling: touch !important;\n  overscroll-behavior: contain !important;\n  touch-action: pan-y !important;\n}\n\n#pf-quotes-list::-webkit-scrollbar {\n  width: 5px;\n}\n\n#pf-quotes-list::-webkit-scrollbar-track {\n  background: rgba(255, 255, 255, 0.03);\n  border-radius: 999px;\n}\n\n#pf-quotes-list::-webkit-scrollbar-thumb {\n  background: rgba(255, 195, 150, 0.32);\n  border-radius: 999px;\n}\n\n.pf-empty-state {\n  text-align: center;\n  padding: 30px 14px;\n  color: #a99b90;\n  font-size: 13px;\n}\n\n.pf-quote-card {\n  position: relative !important;\n  display: block !important;\n  height: auto !important;\n  flex-shrink: 0 !important;\n  background: linear-gradient(145deg, #272030, #201a28) !important;\n  border: 1px solid rgba(255, 200, 160, 0.18) !important;\n  border-radius: 13px !important;\n  padding: 12px 13px 11px !important;\n  margin: 0 0 11px 0 !important;\n  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.26) !important;\n  overflow: visible !important;\n}\n\n.pf-quote-card:last-child {\n  margin-bottom: 2px !important;\n}\n\n.pf-card-top {\n  display: flex !important;\n  align-items: center !important;\n  justify-content: space-between !important;\n  gap: 6px !important;\n  margin-bottom: 7px !important;\n  flex-wrap: wrap !important;\n}\n\n.pf-sticker {\n  display: inline-block !important;\n  padding: 2px 8px !important;\n  border-radius: 6px !important;\n  background: rgba(255, 150, 90, 0.18) !important;\n  border: 1px dashed rgba(255, 168, 115, 0.5) !important;\n  color: #ffc299 !important;\n  font-size: 10.5px !important;\n  font-weight: 700 !important;\n  transform: rotate(-1deg);\n}\n\n.pf-card-meta {\n  font-size: 11px !important;\n  color: #b0a296 !important;\n}\n\n.pf-card-text {\n  display: block !important;\n  font-size: 13px !important;\n  line-height: 1.5 !important;\n  color: #fbf4ec !important;\n  margin: 6px 0 10px !important;\n  white-space: pre-wrap !important;\n  word-break: break-word !important;\n  overflow: visible !important;\n}\n\n.pf-card-actions {\n  display: flex !important;\n  align-items: center !important;\n  gap: 6px !important;\n  flex-wrap: wrap !important;\n  margin-top: 4px !important;\n}\n\n.pf-card-btn {\n  background: rgba(255, 255, 255, 0.07) !important;\n  border: 1px solid rgba(255, 255, 255, 0.12) !important;\n  color: #eee3d8 !important;\n  border-radius: 8px !important;\n  padding: 5px 9px !important;\n  min-height: 0 !important;\n  height: auto !important;\n  margin: 0 !important;\n  font-size: 11.5px !important;\n  line-height: 1.2 !important;\n  cursor: pointer !important;\n  display: inline-flex !important;\n  align-items: center !important;\n  gap: 4px !important;\n  box-shadow: none !important;\n}\n\n.pf-card-btn.pf-fav-active {\n  color: #ff7b9c !important;\n  border-color: rgba(255, 123, 156, 0.48) !important;\n  background: rgba(255, 123, 156, 0.16) !important;\n}\n\n/* ---------- Settings Panel ---------- */\n.pf-settings-grid {\n  display: flex;\n  flex-direction: column;\n  gap: 8px;\n  padding: 6px 2px;\n}\n\n.pf-settings-row {\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  gap: 10px;\n}\n\n.pf-settings-sub {\n  font-size: 11.5px;\n  opacity: 0.75;\n  margin-bottom: 4px;\n}\n\n/* ---------- Keyframes ---------- */\n@keyframes pf-breathe {\n  0%, 100% { transform: translateY(0) scale(1); }\n  50% { transform: translateY(-2px) scale(1.02, 0.98); }\n}\n\n@keyframes pf-tail-wag {\n  0%, 100% { transform: rotate(0deg); }\n  50% { transform: rotate(10deg); }\n}\n\n@keyframes pf-ear-twitch {\n  0%, 86%, 100% { transform: rotate(0deg); }\n  90% { transform: rotate(-9deg); }\n  95% { transform: rotate(4deg); }\n}\n\n@keyframes pf-blink {\n  0%, 92%, 100% { transform: scaleY(1); }\n  95% { transform: scaleY(0.08); }\n}\n\n@keyframes pf-blush-pulse {\n  0%, 100% { opacity: 0.62; }\n  50% { opacity: 0.88; }\n}\n\n@keyframes pf-hop {\n  0%, 100% { transform: translateY(0) scale(1); }\n  45% { transform: translateY(-9px) scale(1.06, 0.95); }\n}\n\n@keyframes pf-gnaw {\n  0%, 100% { transform: translate(0, 0) rotate(0deg); }\n  25% { transform: translate(-1.5px, 1.5px) rotate(-5deg); }\n  75% { transform: translate(1.5px, 1px) rotate(5deg); }\n}\n\n@keyframes pf-poke {\n  0%, 100% { transform: translateX(0); }\n  50% { transform: translateX(-6px) rotate(-6deg); }\n}\n\n@keyframes pf-sleep {\n  0%, 100% { transform: translateY(1.5px) scale(1, 0.96); }\n  50% { transform: translateY(0) scale(1.02, 0.99); }\n}\n\n@keyframes pf-purr-sway {\n  0%, 100% { transform: translateY(0) rotate(-4deg) scale(1.04, 0.96); }\n  50% { transform: translateY(-2px) rotate(4deg) scale(0.98, 1.03); }\n}\n\n@keyframes pf-pout-wiggle {\n  0%, 100% { transform: scale(1); }\n  30% { transform: scale(1.08, 0.93) rotate(-4deg); }\n  65% { transform: scale(1.06, 0.95) rotate(4deg); }\n}\n\n@keyframes pf-float-heart {\n  0% { opacity: 0; transform: translate(0, 3px) scale(0.5); }\n  20% { opacity: 1; transform: translate(var(--hx, 0px), -8px) scale(1.1); }\n  100% { opacity: 0; transform: translate(calc(var(--hx, 0px) * 1.6), -36px) scale(0.8); }\n}\n\n@keyframes pf-wing-l {\n  0%, 100% { transform: rotate(0deg) scale(1); }\n  50% { transform: rotate(-10deg) scale(1.04, 0.96); }\n}\n\n@keyframes pf-wing-r {\n  0%, 100% { transform: rotate(0deg) scale(1); }\n  50% { transform: rotate(10deg) scale(1.04, 0.96); }\n}\n\n@keyframes pf-pop-in {\n  from { opacity: 0; transform: scale(0.92); }\n  to { opacity: 1; transform: scale(1); }\n}\n\n/* Owlet Jump-Rope Idle Animation */\n#pf-widget[data-species=\"owl\"]:not([data-anim]) #pf-avatar-wrap {\n  animation: none;\n}\n\n#pf-widget .pf-owl-jumping .pf-owl-body {\n  transform-origin: 42px 68px;\n  animation: pf-owl-jump 0.92s infinite;\n}\n\n#pf-widget .pf-owl-jumping .pf-owl-shadow {\n  transform-origin: 42px 76px;\n  animation: pf-owl-shadow-pulse 0.92s infinite;\n}\n\n#pf-widget .pf-owl-jumping .pf-rope-front {\n  transform-origin: 42px 52px;\n  animation: pf-rope-spin-front 0.92s linear infinite;\n}\n\n#pf-widget .pf-owl-jumping .pf-rope-back {\n  transform-origin: 42px 52px;\n  animation: pf-rope-spin-back 0.92s linear infinite;\n}\n\n@keyframes pf-owl-jump {\n  0%, 14% { transform: translateY(0) scale(1, 1); }\n  24% { transform: translateY(2px) scale(1.04, 0.95); }\n  48% { transform: translateY(-9.5px) scale(0.97, 1.04); }\n  74% { transform: translateY(1.5px) scale(1.03, 0.96); }\n  88%, 100% { transform: translateY(0) scale(1, 1); }\n}\n\n@keyframes pf-owl-shadow-pulse {\n  0%, 24%, 76%, 100% { transform: scaleX(1); opacity: 0.32; }\n  48% { transform: scaleX(0.62); opacity: 0.14; }\n}\n\n@keyframes pf-rope-spin-front {\n  0% { transform: scaleY(1); opacity: 1; }\n  25% { transform: scaleY(0.12); opacity: 1; }\n  49.9% { transform: scaleY(-0.68); opacity: 1; }\n  50%, 99.9% { transform: scaleY(-0.68); opacity: 0; }\n  100% { transform: scaleY(1); opacity: 1; }\n}\n\n@keyframes pf-rope-spin-back {\n  0%, 49.9% { transform: scaleY(-0.68); opacity: 0; }\n  50% { transform: scaleY(-0.68); opacity: 1; }\n  75% { transform: scaleY(0.12); opacity: 1; }\n  99.9% { transform: scaleY(1); opacity: 1; }\n  100% { transform: scaleY(1); opacity: 0; }\n}\n";
 
   function injectRuntimeStyles() {
     let styleEl = document.getElementById('pf-runtime-css');
@@ -1622,9 +1624,11 @@
   function updateBubbleDocking() {
     const widget = document.getElementById('pf-widget');
     if (!widget) return;
+    const vp = getTrueViewport();
     const rect = widget.getBoundingClientRect();
-    widget.classList.toggle('pf-dock-left', rect.left < window.innerWidth * 0.44);
-    widget.classList.toggle('pf-dock-top', rect.top < 155);
+    const midX = vp.minX + vp.width * 0.46;
+    widget.classList.toggle('pf-dock-left', rect.left < midX);
+    widget.classList.toggle('pf-dock-top', rect.top < vp.minY + 135);
   }
 
   function revealMiniBar(durationMs = 4600) {
@@ -1751,8 +1755,10 @@
       ${quotePreview ? `<div class="pf-bubble-quote">«${escapeHtml(quotePreview)}»</div>` : ''}
     `;
 
+    ensureWidgetVisibleOnScreen();
     updateBubbleDocking();
     bubble.classList.add('pf-visible');
+    requestAnimationFrame(clampBubbleInsideScreen);
 
     clearTimeout(runtime.bubbleTimer);
     runtime.bubbleTimer = setTimeout(() => {
@@ -1839,17 +1845,234 @@
     });
   }
 
-  // ---------- Drag & Hold-to-Pet Positioning ----------
+  // ---------- Cross-Device Smart Screen & Viewport Engine (PC / Android / iOS) ----------
+  const DEVICE_POS_KEY = 'pf_device_pos_v2';
+
+  function getSafeSize() {
+    return Math.max(36, Math.min(86, Number(getSettings().size) || 48));
+  }
+
+  function getTrueViewport() {
+    const docEl = document.documentElement;
+    const vv = window.visualViewport;
+
+    const layoutW = Math.min(
+      window.innerWidth || 0,
+      docEl?.clientWidth || window.innerWidth || 0
+    ) || window.innerWidth || 360;
+
+    const layoutH = Math.min(
+      window.innerHeight || 0,
+      docEl?.clientHeight || window.innerHeight || 0
+    ) || window.innerHeight || 640;
+
+    const offsetLeft = vv ? Math.max(0, vv.offsetLeft || 0) : 0;
+    const offsetTop = vv ? Math.max(0, vv.offsetTop || 0) : 0;
+    const width = vv && vv.width > 80 ? Math.min(vv.width, layoutW || vv.width) : layoutW;
+    const height = vv && vv.height > 80 ? Math.min(vv.height, layoutH || vv.height) : layoutH;
+
+    // Detect top SillyTavern bar height if visible so we never hide under it
+    const topBar = document.getElementById('top-bar') || document.getElementById('top-settings-holder');
+    let topInset = 8;
+    if (topBar) {
+      const tr = topBar.getBoundingClientRect();
+      if (tr.height > 0 && tr.height < 90 && tr.top <= offsetTop + 10) {
+        topInset = Math.max(8, Math.round(tr.bottom - offsetTop + 6));
+      }
+    }
+
+    const minX = Math.round(offsetLeft + 6);
+    const minY = Math.round(offsetTop + topInset);
+    const maxX = Math.max(minX + 60, Math.round(offsetLeft + width - 6));
+    const maxY = Math.max(minY + 60, Math.round(offsetTop + height - 8));
+
+    return {
+      minX,
+      minY,
+      maxX,
+      maxY,
+      width: maxX - minX,
+      height: maxY - minY,
+      rawW: width,
+      rawH: height,
+      isMobile: width <= 768 || ('ontouchstart' in window && width <= 1024),
+    };
+  }
+
+  function loadDevicePosRatio() {
+    try {
+      const raw = localStorage.getItem(DEVICE_POS_KEY);
+      if (!raw) return null;
+      const parsed = JSON.parse(raw);
+      if (
+        parsed &&
+        typeof parsed.rx === 'number' &&
+        typeof parsed.ry === 'number' &&
+        Number.isFinite(parsed.rx) &&
+        Number.isFinite(parsed.ry) &&
+        parsed.rx >= 0 && parsed.rx <= 1 &&
+        parsed.ry >= 0 && parsed.ry <= 1
+      ) {
+        return parsed;
+      }
+    } catch (_) {}
+    return null;
+  }
+
+  function saveDevicePosRatio(leftPx, topPx, sz) {
+    const vp = getTrueViewport();
+    const spanX = Math.max(1, vp.maxX - sz - vp.minX);
+    const spanY = Math.max(1, vp.maxY - sz - vp.minY);
+    const rx = Math.max(0, Math.min(1, (leftPx - vp.minX) / spanX));
+    const ry = Math.max(0, Math.min(1, (topPx - vp.minY) / spanY));
+    try {
+      localStorage.setItem(DEVICE_POS_KEY, JSON.stringify({ rx, ry }));
+    } catch (_) {}
+  }
+
+  function clearDevicePosRatio() {
+    try {
+      localStorage.removeItem(DEVICE_POS_KEY);
+    } catch (_) {}
+  }
+
+  function computeSmartDefaultXY(sz) {
+    const vp = getTrueViewport();
+    let targetX = vp.maxX - sz - 6;
+    let targetY = vp.maxY - sz - 84;
+
+    // Anchor smartly near SillyTavern's chat & input form on both PC ultrawide and phones
+    const chatBox = document.getElementById('sheld') || document.getElementById('chat');
+    if (chatBox) {
+      const cr = chatBox.getBoundingClientRect();
+      if (cr.width > 120 && cr.right > vp.minX + 60) {
+        targetX = Math.min(vp.maxX - sz - 6, Math.round(cr.right - sz - 8));
+      }
+    }
+
+    const sendForm = document.getElementById('send_form') || document.getElementById('form_sheld');
+    if (sendForm) {
+      const sr = sendForm.getBoundingClientRect();
+      if (sr.height > 10 && sr.top > vp.minY + sz + 12 && sr.top <= vp.maxY + 20) {
+        targetY = Math.round(sr.top - sz - 10);
+      }
+    }
+
+    return {
+      x: Math.max(vp.minX, Math.min(vp.maxX - sz, targetX)),
+      y: Math.max(vp.minY, Math.min(vp.maxY - sz - 26, targetY)),
+    };
+  }
+
+  // Places #pf-widget at exact visible screen coordinates, compensating if <body> has CSS transform/filter/zoom
+  function placeWidgetOnScreen(widget, desiredX, desiredY) {
+    if (!widget) return;
+    const sz = getSafeSize();
+    const vp = getTrueViewport();
+    const safeX = Math.max(vp.minX, Math.min(vp.maxX - sz, Math.round(desiredX)));
+    const safeY = Math.max(vp.minY, Math.min(vp.maxY - sz, Math.round(desiredY)));
+
+    widget.style.right = 'auto';
+    widget.style.bottom = 'auto';
+    widget.style.left = safeX + 'px';
+    widget.style.top = safeY + 'px';
+
+    // Verify real rendered position via getBoundingClientRect() and cancel out any theme/body offset!
+    const actual = widget.getBoundingClientRect();
+    if (actual.width > 0 && actual.height > 0) {
+      const driftX = actual.left - safeX;
+      const driftY = actual.top - safeY;
+      if (Math.abs(driftX) > 1.5 || Math.abs(driftY) > 1.5) {
+        widget.style.left = Math.round(safeX - driftX) + 'px';
+        widget.style.top = Math.round(safeY - driftY) + 'px';
+      }
+    }
+  }
+
   function applySavedPosition(widget) {
+    if (!widget) widget = document.getElementById('pf-widget');
+    if (!widget) return;
+
+    // Clear any legacy cross-device pixel coordinates from old versions
     const s = getSettings();
-    const sz = Math.max(36, Math.min(86, Number(s.size) || 48));
-    if (s.position && typeof s.position.left === 'number' && typeof s.position.top === 'number') {
-      const clampedLeft = Math.max(4, Math.min(window.innerWidth - sz - 4, s.position.left));
-      const clampedTop = Math.max(42, Math.min(window.innerHeight - sz - 36, s.position.top));
-      widget.style.left = clampedLeft + 'px';
-      widget.style.top = clampedTop + 'px';
-      widget.style.right = 'auto';
-      widget.style.bottom = 'auto';
+    if (s.position !== null) {
+      s.position = null;
+      saveSettings();
+    }
+
+    const sz = getSafeSize();
+    const vp = getTrueViewport();
+    const savedRatio = loadDevicePosRatio();
+
+    if (savedRatio) {
+      const spanX = Math.max(1, vp.maxX - sz - vp.minX);
+      const spanY = Math.max(1, vp.maxY - sz - vp.minY);
+      const x = vp.minX + savedRatio.rx * spanX;
+      const y = vp.minY + savedRatio.ry * spanY;
+      placeWidgetOnScreen(widget, x, y);
+    } else {
+      const def = computeSmartDefaultXY(sz);
+      placeWidgetOnScreen(widget, def.x, def.y);
+    }
+    updateBubbleDocking();
+  }
+
+  function ensureWidgetVisibleOnScreen() {
+    if (runtime.isDragging) return;
+    const s = getSettings();
+    if (!s.enabled) return;
+    const widget = document.getElementById('pf-widget');
+    if (!widget || widget.classList.contains('pf-hidden')) return;
+
+    const sz = getSafeSize();
+    const vp = getTrueViewport();
+    const rect = widget.getBoundingClientRect();
+
+    const outOfBounds =
+      rect.left < vp.minX - 2 ||
+      rect.top < vp.minY - 2 ||
+      rect.right > vp.maxX + 2 ||
+      rect.bottom > vp.maxY + 2;
+
+    if (outOfBounds) {
+      if (loadDevicePosRatio()) {
+        placeWidgetOnScreen(widget, rect.left, rect.top);
+      } else {
+        const def = computeSmartDefaultXY(sz);
+        placeWidgetOnScreen(widget, def.x, def.y);
+      }
+    }
+    updateBubbleDocking();
+  }
+
+  function clampBubbleInsideScreen() {
+    const bubble = document.getElementById('pf-bubble');
+    if (!bubble || !bubble.classList.contains('pf-visible')) return;
+
+    bubble.style.setProperty('--pf-bub-dx', '0px');
+    bubble.style.setProperty('--pf-bub-dy', '0px');
+
+    const vp = getTrueViewport();
+    const br = bubble.getBoundingClientRect();
+    if (!br.width || !br.height) return;
+
+    let dx = 0;
+    let dy = 0;
+    if (br.left < vp.minX) {
+      dx = Math.round(vp.minX - br.left);
+    } else if (br.right > vp.maxX) {
+      dx = Math.round(vp.maxX - br.right);
+    }
+
+    if (br.top < vp.minY) {
+      dy = Math.round(vp.minY - br.top);
+    } else if (br.bottom > vp.maxY) {
+      dy = Math.round(vp.maxY - br.bottom);
+    }
+
+    if (dx !== 0 || dy !== 0) {
+      bubble.style.setProperty('--pf-bub-dx', dx + 'px');
+      bubble.style.setProperty('--pf-bub-dy', dy + 'px');
     }
   }
 
@@ -1860,19 +2083,20 @@
     let holdTimer = null;
     let startX = 0;
     let startY = 0;
-    let origLeft = 0;
-    let origTop = 0;
+    let origScreenLeft = 0;
+    let origScreenTop = 0;
 
     handle.addEventListener('pointerdown', (e) => {
       if (e.button !== undefined && e.button !== 0) return;
       dragging = true;
+      runtime.isDragging = true;
       moved = false;
       holdPetFired = false;
       const rect = widget.getBoundingClientRect();
       startX = e.clientX;
       startY = e.clientY;
-      origLeft = rect.left;
-      origTop = rect.top;
+      origScreenLeft = rect.left;
+      origScreenTop = rect.top;
       handle.setPointerCapture?.(e.pointerId);
 
       clearTimeout(holdTimer);
@@ -1894,26 +2118,22 @@
       }
       if (!moved) return;
 
-      const sz = Math.max(36, Math.min(86, Number(getSettings().size) || 48));
-      const newLeft = Math.max(4, Math.min(window.innerWidth - sz - 4, origLeft + dx));
-      const newTop = Math.max(42, Math.min(window.innerHeight - sz - 36, origTop + dy));
-      widget.style.left = newLeft + 'px';
-      widget.style.top = newTop + 'px';
-      widget.style.right = 'auto';
-      widget.style.bottom = 'auto';
+      placeWidgetOnScreen(widget, origScreenLeft + dx, origScreenTop + dy);
       updateBubbleDocking();
+      clampBubbleInsideScreen();
     });
 
     const finishPointer = (e) => {
       if (!dragging) return;
       dragging = false;
+      runtime.isDragging = false;
       clearTimeout(holdTimer);
       handle.releasePointerCapture?.(e.pointerId);
       if (moved) {
         const rect = widget.getBoundingClientRect();
-        const s = getSettings();
-        s.position = { left: Math.round(rect.left), top: Math.round(rect.top) };
-        saveSettings();
+        saveDevicePosRatio(rect.left, rect.top, getSafeSize());
+        updateBubbleDocking();
+        clampBubbleInsideScreen();
       } else if (!holdPetFired) {
         onFamiliarTap();
       }
@@ -1922,13 +2142,29 @@
     handle.addEventListener('pointerup', finishPointer);
     handle.addEventListener('pointercancel', () => {
       dragging = false;
+      runtime.isDragging = false;
       clearTimeout(holdTimer);
     });
 
-    window.addEventListener('resize', () => {
-      applySavedPosition(widget);
-      updateBubbleDocking();
-    });
+    const onViewportShift = () => {
+      if (!runtime.isDragging) {
+        applySavedPosition(widget);
+        clampBubbleInsideScreen();
+      }
+    };
+
+    window.addEventListener('resize', onViewportShift);
+    window.addEventListener('orientationchange', () => setTimeout(onViewportShift, 180));
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', onViewportShift);
+      window.visualViewport.addEventListener('scroll', onViewportShift);
+    }
+
+    // Self-healing watchdog for delayed theme layouts / mobile address bars / virtual keyboards
+    clearInterval(runtime.screenWatchdog);
+    runtime.screenWatchdog = setInterval(ensureWidgetVisibleOnScreen, 2000);
+    setTimeout(onViewportShift, 300);
+    setTimeout(onViewportShift, 1200);
   }
 
   // ---------- Scrapbook Modal ----------
@@ -2399,13 +2635,13 @@
         <div class="pf-ico-btn" role="button" tabindex="0" id="pf-btn-species" title="Выбрать зверька">🦊</div>
       </div>
     `;
-    document.body.appendChild(widget);
+    (document.documentElement || document.body).appendChild(widget);
 
     const feedBtn = document.createElement('div');
     feedBtn.id = 'pf-feed-btn';
     feedBtn.setAttribute('role', 'button');
     feedBtn.innerHTML = '🐾 Скормить';
-    document.body.appendChild(feedBtn);
+    (document.documentElement || document.body).appendChild(feedBtn);
 
     const modalBackdrop = document.createElement('div');
     modalBackdrop.id = 'pf-modal-backdrop';
@@ -2425,7 +2661,7 @@
         <div id="pf-quotes-list"></div>
       </div>
     `;
-    document.body.appendChild(modalBackdrop);
+    (document.documentElement || document.body).appendChild(modalBackdrop);
 
     applySavedPosition(widget);
     setupDraggable(widget, document.getElementById('pf-stage'));
@@ -2695,6 +2931,7 @@
       if (lbl) lbl.textContent = v + 'px';
       saveSettings();
       refreshFamiliarAppearance();
+      ensureWidgetVisibleOnScreen();
     }, 'input');
 
     bind('pf_set_pinbar', (e) => {
@@ -2761,13 +2998,11 @@
       const s = getSettings();
       s.position = null;
       saveSettings();
+      clearDevicePosRatio();
       const widget = document.getElementById('pf-widget');
       if (widget) {
-        widget.style.left = '';
-        widget.style.top = '';
-        widget.style.right = '12px';
-        widget.style.bottom = '108px';
-        updateBubbleDocking();
+        applySavedPosition(widget);
+        showBubble('Я вернулся прямо на видное место! 💕', { anim: 'hop', state: 'happy', duration: 4000 });
       }
     });
   }
